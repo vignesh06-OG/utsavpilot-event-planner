@@ -9,6 +9,7 @@ lerna-debug.log*
 
 # Demo video raw capture
 docs/demo_video/raw/
+docs/demo_video/raw_117s/
 
 node_modules
 dist
