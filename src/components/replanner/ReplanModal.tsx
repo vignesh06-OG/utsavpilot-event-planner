@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
   X, 
@@ -26,6 +26,15 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
   const [guestCount, setGuestCount] = useState<number>(currentPlan.input.guestCount);
   const [date, setDate] = useState<string>(currentPlan.input.date);
   const [tier, setTier] = useState<EventTier>(currentPlan.input.tier);
+
+  // Accessible Escape key listener for dialog dismissal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   // Compute live preview of delta
   const { updatedPlan, delta } = calculateReplanDelta(currentPlan, {

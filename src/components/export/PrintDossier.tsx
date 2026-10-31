@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Printer, X, Download } from 'lucide-react';
 import type { EventPlan } from '../../domain/types';
@@ -12,6 +12,15 @@ interface PrintDossierProps {
 
 export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => {
   const { input, budgetReport, summary, tasks, vendorChecklist, suggestions } = plan;
+
+  // Accessible Escape key listener for dialog dismissal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
 
   const handlePrint = () => {
     window.print();

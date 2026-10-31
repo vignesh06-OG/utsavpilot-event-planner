@@ -35,3 +35,4 @@ jobs:
 
       - name: Build Production Client Bundle
         run: npm run build
+

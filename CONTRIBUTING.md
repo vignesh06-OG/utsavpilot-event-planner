@@ -57,3 +57,4 @@ The domain calculation modules in `src/engine/budgetEngine.ts` and `src/engine/r
 - Branch naming: `feat/feature-name` or `fix/bug-description`.
 - Keep commits clear, descriptive, and atomic.
 - Include evidence of automated test passes in PR descriptions.
+

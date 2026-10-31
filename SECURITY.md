@@ -31,3 +31,4 @@ The UtsavPilot team takes security, user privacy, and secret isolation seriously
 
 4. **Rate Limiting:**
    - The backend API implements an in-memory sliding-window rate limiter (25 requests per minute per IP).
+

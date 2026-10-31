@@ -93,3 +93,4 @@ The PromptWars Virtual challenge requires an original, production-quality, GenAI
 - **NFR-03 (Security):** Zero client-side API secret leakage; strict CORS and input length truncation (max 1500 chars).
 - **NFR-04 (Accessibility):** WCAG 2.2 AA compliant contrast ratios (minimum 4.5:1 for normal text, 3:1 for large text); keyboard accessible dialogs.
 - **NFR-05 (Cross-Device Responsiveness):** Fluid responsiveness across viewports (1440px desktop down to 360px mobile) with zero horizontal scroll clipping.
+

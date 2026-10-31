@@ -96,3 +96,4 @@
   - No broken buttons or non-functional mockups.
   - No secret keys exposed in git or client code.
   - No dependency on live third-party network APIs for core calculation.
+
