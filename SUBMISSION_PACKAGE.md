@@ -12,9 +12,9 @@
 - **Tagline:** *"Create a realistic event plan, understand where the money goes, and adapt the plan intelligently whenever circumstances change."*
 - **Public GitHub Repository:** [https://github.com/vignesh06-OG/utsavpilot-event-planner](https://github.com/vignesh06-OG/utsavpilot-event-planner)
 - **Verified Public Deployment URL:** [https://vignesh06-og.github.io/utsavpilot-event-planner/](https://vignesh06-og.github.io/utsavpilot-event-planner/)
-- **Demo Video URL:** *Pending User Recording* (To be recorded and linked by host; no simulated URL fabricated)
+- **Demo Video Deliverable:** [`docs/demo_video/utsavpilot_competition_demo.mp4`](https://github.com/vignesh06-OG/utsavpilot-event-planner/blob/main/docs/demo_video/utsavpilot_competition_demo.mp4) (106.47s, 1920×1080 Full HD, H.264)
 - **Screenshot Directory:** [`docs/screenshots/`](https://github.com/vignesh06-OG/utsavpilot-event-planner/tree/main/docs/screenshots)
-- **Commit SHA:** `d4ed423` (Final Audited Revision; includes WAI-ARIA modal Escape dismissal)
+- **Commit SHA:** `HEAD` (Restored image-rich editorial UI, WebP asset pipeline, responsive hero cards)
 
 ---
 
