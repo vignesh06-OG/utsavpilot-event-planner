@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Building2, 
-  HelpCircle, 
   ShieldCheck, 
   ChevronDown, 
   ChevronUp, 
   Tag
 } from 'lucide-react';
 import type { VendorChecklistItem, VendorStatus } from '../../domain/types';
+import { accordionVariants } from '../../motion/motionTokens';
 
 interface VendorBoardProps {
   vendors: VendorChecklistItem[];
@@ -64,8 +65,8 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
       <div
         className="card"
         style={{
-          background: 'rgba(99, 102, 241, 0.08)',
-          borderColor: 'rgba(99, 102, 241, 0.25)',
+          background: 'rgba(23, 107, 88, 0.08)',
+          border: '1px solid var(--border-emerald)',
           padding: 'var(--space-3) var(--space-4)',
           marginBottom: 'var(--space-4)',
           fontSize: '0.825rem',
@@ -74,7 +75,7 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
           gap: '10px',
         }}
       >
-        <HelpCircle size={18} style={{ color: '#818CF8', flexShrink: 0 }} />
+        <ShieldCheck size={18} style={{ color: 'var(--color-emerald)', flexShrink: 0 }} />
         <span style={{ color: 'var(--text-primary)' }}>
           <strong>Pricing Integrity Disclosure:</strong> Costs shown below are based on regional industry benchmarks for this celebration tier. UtsavPilot does not fabricate live quotes or pretend to hold automated booking partnerships.
         </span>
@@ -87,14 +88,16 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
           const statusMeta = STATUS_LABELS[v.status] || STATUS_LABELS.not_contacted;
 
           return (
-            <div
+            <motion.div
               key={v.id}
+              layout
               className="card"
               style={{
                 padding: 'var(--space-4)',
                 background: isExpanded ? 'var(--bg-card-elevated)' : 'var(--bg-card)',
                 borderColor: v.status === 'booked' ? 'var(--color-success-border)' : 'var(--border-subtle)',
               }}
+              whileHover={{ y: -2, transition: { duration: 0.15 } }}
             >
               <div
                 style={{
@@ -144,56 +147,67 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
                     <option value="booked">Booked & Confirmed</option>
                   </select>
 
-                  <button
+                  <motion.button
                     type="button"
                     className="btn btn-secondary btn-sm"
                     onClick={() => toggleExpand(v.id)}
                     aria-expanded={isExpanded}
                     aria-label={`Toggle details for ${v.serviceTitle}`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
                     {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     <span>{isExpanded ? 'Hide Due Diligence' : 'Questions & Tips'}</span>
-                  </button>
+                  </motion.button>
                 </div>
               </div>
 
               {/* Due Diligence & Negotiation Details */}
-              {isExpanded && (
-                <div
-                  style={{
-                    marginTop: 'var(--space-4)',
-                    paddingTop: 'var(--space-4)',
-                    borderTop: '1px solid var(--border-subtle)',
-                  }}
-                >
-                  <div style={{ marginBottom: 'var(--space-3)' }}>
-                    <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-gold-light)', textTransform: 'uppercase', marginBottom: '4px' }}>
-                      Key Questions to Ask This Vendor:
-                    </div>
-                    <ul style={{ paddingLeft: '18px', listStyleType: 'circle' }}>
-                      {v.keyQuestionsToAsk.map((q, idx) => (
-                        <li key={idx} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '3px' }}>
-                          {q}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    variants={accordionVariants}
+                    initial="collapsed"
+                    animate="expanded"
+                    exit="collapsed"
                     style={{
-                      background: 'var(--bg-input)',
-                      padding: 'var(--space-3)',
-                      borderRadius: 'var(--radius-sm)',
-                      borderLeft: '3px solid var(--color-gold)',
-                      fontSize: '0.825rem',
-                      color: 'var(--text-primary)',
+                      overflow: 'hidden',
+                      marginTop: 'var(--space-4)',
+                      paddingTop: 'var(--space-4)',
+                      borderTop: '1px solid var(--border-subtle)',
                     }}
                   >
-                    <strong>💡 Pro Verification Tip:</strong> {v.verificationTip}
-                  </div>
-                </div>
-              )}
-            </div>
+                    <div style={{ marginBottom: 'var(--space-3)' }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-gold-light)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                        Key Questions to Ask This Vendor:
+                      </div>
+                      <ul style={{ paddingLeft: '18px', listStyleType: 'circle' }}>
+                        {v.keyQuestionsToAsk.map((q, idx) => (
+                          <li key={idx} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '3px' }}>
+                            {q}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div
+                      style={{
+                        background: 'var(--bg-input)',
+                        padding: 'var(--space-3)',
+                        borderRadius: 'var(--radius-sm)',
+                        borderLeftColor: 'var(--color-gold)',
+                        borderLeftWidth: '3px',
+                        borderLeftStyle: 'solid',
+                        fontSize: '0.825rem',
+                        color: 'var(--text-primary)',
+                      }}
+                    >
+                      <strong>💡 Pro Verification Tip:</strong> {v.verificationTip}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
           );
         })}
       </div>

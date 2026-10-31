@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { 
   Calendar, 
   MapPin, 
@@ -11,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { EventPlan } from '../../domain/types';
 import { formatINR, formatLakhCrore } from '../../engine/budgetEngine';
+import { staggerContainerVariants, staggerItemVariants } from '../../motion/motionTokens';
 
 interface ExecutiveSummaryProps {
   plan: EventPlan;
@@ -20,7 +22,7 @@ interface ExecutiveSummaryProps {
 export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpenReplan }) => {
   const { input, budgetReport, summary, modelUsed, isDemoSample } = plan;
 
-  // Calculate days remaining
+  // Calculate days remaining in pure memoized state
   const [now] = React.useState(() => Date.now());
   const daysRemaining = React.useMemo(() => {
     const eventTime = new Date(input.date).getTime();
@@ -28,27 +30,32 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
   }, [input.date, now]);
 
   return (
-    <div
+    <motion.div
       className="card card-elevated"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       style={{
         position: 'relative',
         overflow: 'hidden',
         marginBottom: 'var(--space-6)',
-        border: '1px solid var(--border-gold)',
+        border: '1.5px solid var(--border-gold)',
+        background: 'var(--bg-card)',
+        padding: 'var(--space-8)',
       }}
     >
-      {/* Festive Background Image Overlay */}
+      {/* Editorial Decorative Background Watermark */}
       <div
         style={{
           position: 'absolute',
           top: 0,
           right: 0,
           bottom: 0,
-          width: '50%',
-          backgroundImage: 'url(/celebration_banner.jpg)',
+          width: '45%',
+          backgroundImage: 'url(/editorial_mandap.jpg)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center right',
-          opacity: 0.18,
+          backgroundPosition: 'center',
+          opacity: 0.12,
           pointerEvents: 'none',
           maskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
           WebkitMaskImage: 'linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)',
@@ -58,22 +65,22 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
       <div style={{ position: 'relative', zIndex: 2 }}>
         {/* Top Badges Row */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: 'var(--space-3)' }}>
-          <span className="badge badge-gold">
+          <span className="badge badge-primary">
             ✦ {input.eventType.replace('_', ' ').toUpperCase()}
           </span>
 
           <span className={`badge ${budgetReport.isFeasible ? 'badge-success' : 'badge-danger'}`}>
             {budgetReport.isFeasible ? <CheckCircle size={13} /> : <AlertTriangle size={13} />}
-            {budgetReport.isFeasible ? 'Budget Feasible' : 'Feasibility Alert'}
+            {budgetReport.isFeasible ? 'Budget Feasible' : 'Feasibility Shortfall'}
           </span>
 
-          <span className={`badge ${modelUsed === 'gemini-flash' ? 'badge-primary' : 'badge-info'}`}>
+          <span className={`badge ${modelUsed === 'gemini-flash' ? 'badge-info' : 'badge-gold'}`}>
             {modelUsed === 'gemini-flash' ? 'AI: Gemini 1.5 Flash' : 'Deterministic Engine'}
           </span>
 
           {isDemoSample && (
-            <span className="badge badge-warning" title="This plan is loaded from pre-calibrated sample data">
-              Sample Demo Plan
+            <span className="badge badge-gold" title="Loaded from pre-calibrated sample data">
+              Sample Celebration
             </span>
           )}
 
@@ -83,7 +90,7 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
               <span>{daysRemaining} Days to Celebration</span>
             </span>
           ) : (
-            <span className="badge badge-gold">Today / Celebrated</span>
+            <span className="badge badge-gold">Celebration Day</span>
           )}
         </div>
 
@@ -97,43 +104,63 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ maxWidth: '780px' }}>
-            <h1 style={{ marginBottom: 'var(--space-2)' }}>{input.title}</h1>
-            <p style={{ fontSize: '1.05rem', color: 'var(--text-primary)', lineHeight: 1.5 }}>
+          <div style={{ maxWidth: '820px' }}>
+            <h1 style={{ marginBottom: 'var(--space-2)', color: 'var(--text-primary)' }}>
+              {input.title}
+            </h1>
+            <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               {summary}
             </p>
           </div>
 
           <div>
-            <button
+            <motion.button
               type="button"
-              className="btn btn-gold pulse-glow"
+              className="btn btn-primary pulse-glow"
               onClick={onOpenReplan}
               aria-label="Adapt or replan event constraints"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
               <Sliders size={16} />
               <span>Adapt & Replan</span>
-            </button>
+            </motion.button>
           </div>
         </div>
 
-        {/* Key Metrics Strip */}
-        <div
+        {/* Financial Hierarchy Metric Cards */}
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          animate="visible"
           className="grid-4"
           style={{
-            marginTop: 'var(--space-6)',
-            paddingTop: 'var(--space-4)',
+            marginTop: 'var(--space-8)',
+            paddingTop: 'var(--space-6)',
             borderTop: '1px solid var(--border-subtle)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Card 1: Event Schedule */}
+          <motion.div
+            variants={staggerItemVariants}
+            whileHover={{ y: -3, transition: { duration: 0.15 } }}
+            style={{
+              background: 'var(--bg-canvas-subtle)',
+              padding: 'var(--space-4)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-subtle)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
             <div
               style={{
                 width: '42px',
                 height: '42px',
-                borderRadius: 'var(--radius-md)',
-                background: 'rgba(245, 158, 11, 0.12)',
-                color: 'var(--color-gold)',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--color-marigold-light)',
+                color: 'var(--color-marigold-dark)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -142,24 +169,39 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
               <Calendar size={20} />
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                Event Date
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
+                Celebration Date
               </div>
-              <div style={{ fontWeight: 700, fontSize: '0.975rem' }}>{input.date}</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-gold-light)' }}>
-                {input.durationDays} {input.durationDays === 1 ? 'Day' : 'Days'} Duration
+              <div style={{ fontWeight: 800, fontSize: '0.975rem', color: 'var(--text-primary)' }}>
+                {input.date}
+              </div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-vermilion)' }}>
+                {input.durationDays} {input.durationDays === 1 ? 'Day Ceremony' : 'Days Celebrations'}
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Card 2: Venue & Tier */}
+          <motion.div
+            variants={staggerItemVariants}
+            whileHover={{ y: -3, transition: { duration: 0.15 } }}
+            style={{
+              background: 'var(--bg-canvas-subtle)',
+              padding: 'var(--space-4)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-subtle)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
             <div
               style={{
                 width: '42px',
                 height: '42px',
-                borderRadius: 'var(--radius-md)',
-                background: 'rgba(99, 102, 241, 0.12)',
-                color: '#818CF8',
+                borderRadius: 'var(--radius-sm)',
+                background: '#F2EEF5',
+                color: 'var(--bg-dark-primary)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -168,24 +210,39 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
               <MapPin size={20} />
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                Location & Tier
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
+                Venue & Atmosphere
               </div>
-              <div style={{ fontWeight: 700, fontSize: '0.975rem' }}>{input.city}</div>
+              <div style={{ fontWeight: 800, fontSize: '0.975rem', color: 'var(--text-primary)' }}>
+                {input.city}
+              </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>
-                {input.tier} Tier Celebration
+                {input.tier} Tier Excellence
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Card 3: Guests & Per Head */}
+          <motion.div
+            variants={staggerItemVariants}
+            whileHover={{ y: -3, transition: { duration: 0.15 } }}
+            style={{
+              background: 'var(--bg-canvas-subtle)',
+              padding: 'var(--space-4)',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border-subtle)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
             <div
               style={{
                 width: '42px',
                 height: '42px',
-                borderRadius: 'var(--radius-md)',
-                background: 'rgba(16, 185, 129, 0.12)',
-                color: 'var(--color-success)',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--color-emerald-light)',
+                color: 'var(--color-emerald)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -194,24 +251,39 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
               <Users size={20} />
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
                 Guest Scale
               </div>
-              <div style={{ fontWeight: 700, fontSize: '0.975rem' }}>{input.guestCount} Guests</div>
+              <div style={{ fontWeight: 800, fontSize: '0.975rem', color: 'var(--text-primary)' }}>
+                {input.guestCount} Guests
+              </div>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
                 ~{formatINR(budgetReport.costPerGuest)} / head
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          {/* Card 4: Total Reconciled Budget */}
+          <motion.div
+            variants={staggerItemVariants}
+            whileHover={{ y: -3, transition: { duration: 0.15 } }}
+            style={{
+              background: 'var(--bg-canvas-subtle)',
+              padding: 'var(--space-4)',
+              borderRadius: 'var(--radius-md)',
+              border: '1.5px solid var(--border-gold)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+            }}
+          >
             <div
               style={{
                 width: '42px',
                 height: '42px',
-                borderRadius: 'var(--radius-md)',
-                background: 'rgba(255, 90, 31, 0.12)',
-                color: 'var(--color-primary)',
+                borderRadius: 'var(--radius-sm)',
+                background: 'var(--color-vermilion-light)',
+                color: 'var(--color-vermilion)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -220,19 +292,19 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
               <IndianRupee size={20} />
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                Total Budget
+              <div style={{ fontSize: '0.725rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
+                Reconciled Budget
               </div>
-              <div style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--color-gold-light)' }}>
+              <div style={{ fontWeight: 800, fontSize: '1.15rem', color: 'var(--color-vermilion)' }}>
                 {formatINR(input.totalBudget)}
               </div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                {formatLakhCrore(input.totalBudget)} (100% reconciled)
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-marigold-dark)', fontWeight: 600 }}>
+                {formatLakhCrore(input.totalBudget)} (100% Match)
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };

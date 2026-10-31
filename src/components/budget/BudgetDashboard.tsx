@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   IndianRupee, 
   ShieldAlert, 
@@ -8,6 +9,7 @@ import {
 } from 'lucide-react';
 import type { BudgetFeasibilityReport, BudgetCategory } from '../../domain/types';
 import { formatINR } from '../../engine/budgetEngine';
+import { accordionVariants } from '../../motion/motionTokens';
 
 interface BudgetDashboardProps {
   report: BudgetFeasibilityReport;
@@ -15,14 +17,14 @@ interface BudgetDashboardProps {
 }
 
 const CATEGORY_COLORS = [
-  '#FF5A1F', // Orange/Saffron
-  '#F59E0B', // Amber Gold
-  '#10B981', // Emerald
-  '#6366F1', // Indigo
-  '#EC4899', // Pink
-  '#8B5CF6', // Purple
-  '#06B6D4', // Cyan
-  '#64748B', // Contingency Slate
+  '#E85D3F', // Vermilion
+  '#E7A83E', // Marigold
+  '#176B58', // Emerald
+  '#28152F', // Aubergine
+  '#9333EA', // Royal Purple
+  '#C2410C', // Rust
+  '#0284C7', // Sky
+  '#64748B', // Slate Contingency
 ];
 
 export const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
@@ -136,12 +138,13 @@ export const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
           {report.categories.map((cat, idx) => {
             const color = CATEGORY_COLORS[idx % CATEGORY_COLORS.length];
             return (
-              <div
+              <motion.div
                 key={cat.id}
+                initial={{ width: 0 }}
+                animate={{ width: `${cat.percentage}%` }}
+                transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
                 style={{
-                  width: `${cat.percentage}%`,
                   backgroundColor: color,
-                  transition: 'width 0.3s ease',
                 }}
                 title={`${cat.name}: ${cat.percentage}% (${formatINR(cat.allocatedAmount)})`}
               />
@@ -186,8 +189,12 @@ export const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
               style={{
                 padding: 'var(--space-4)',
                 background: isExpanded ? 'var(--bg-card-elevated)' : 'var(--bg-card)',
-                borderColor: isExpanded ? 'var(--border-medium)' : 'var(--border-subtle)',
-                borderLeft: `4px solid ${color}`,
+                borderTopColor: isExpanded ? 'var(--border-medium)' : 'var(--border-subtle)',
+                borderRightColor: isExpanded ? 'var(--border-medium)' : 'var(--border-subtle)',
+                borderBottomColor: isExpanded ? 'var(--border-medium)' : 'var(--border-subtle)',
+                borderLeftColor: color,
+                borderLeftWidth: '4px',
+                borderLeftStyle: 'solid',
               }}
             >
               <div
@@ -289,57 +296,63 @@ export const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
                 </div>
               </div>
 
-              {/* Sub items dropdown */}
-              {isExpanded && cat.subItems && cat.subItems.length > 0 && (
-                <div
-                  style={{
-                    marginTop: 'var(--space-4)',
-                    paddingTop: 'var(--space-3)',
-                    borderTop: '1px solid var(--border-subtle)',
-                  }}
-                >
-                  <div
+              {/* Sub items dropdown with AnimatePresence */}
+              <AnimatePresence>
+                {isExpanded && cat.subItems && cat.subItems.length > 0 && (
+                  <motion.div
+                    variants={accordionVariants}
+                    initial="collapsed"
+                    animate="expanded"
+                    exit="collapsed"
                     style={{
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      color: 'var(--text-muted)',
-                      textTransform: 'uppercase',
-                      marginBottom: 'var(--space-2)',
+                      marginTop: 'var(--space-4)',
+                      paddingTop: 'var(--space-3)',
+                      borderTop: '1px solid var(--border-subtle)',
                     }}
                   >
-                    Sub-Item Itemized Allocation
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    {cat.subItems.map((sub) => (
-                      <div
-                        key={sub.id}
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                          padding: '6px 12px',
-                          background: 'var(--bg-input)',
-                          borderRadius: 'var(--radius-sm)',
-                          fontSize: '0.85rem',
-                        }}
-                      >
-                        <span style={{ color: 'var(--text-primary)' }}>{sub.name}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
-                            {formatINR(sub.amount)}
-                          </span>
-                          <span
-                            className="badge badge-info"
-                            style={{ fontSize: '0.675rem', padding: '1px 6px' }}
-                          >
-                            {sub.provenance}
-                          </span>
+                    <div
+                      style={{
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        color: 'var(--text-muted)',
+                        textTransform: 'uppercase',
+                        marginBottom: 'var(--space-2)',
+                      }}
+                    >
+                      Sub-Item Itemized Allocation
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                      {cat.subItems.map((sub) => (
+                        <div
+                          key={sub.id}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '6px 12px',
+                            background: 'var(--bg-input)',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.85rem',
+                          }}
+                        >
+                          <span style={{ color: 'var(--text-primary)' }}>{sub.name}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                              {formatINR(sub.amount)}
+                            </span>
+                            <span
+                              className="badge badge-info"
+                              style={{ fontSize: '0.675rem', padding: '1px 6px' }}
+                            >
+                              {sub.provenance}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}

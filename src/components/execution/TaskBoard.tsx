@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   CheckSquare, 
   Square, 
@@ -8,6 +9,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import type { PlanTask, TaskMilestonePhase, TaskPriority } from '../../domain/types';
+import { accordionVariants, smoothTransition } from '../../motion/motionTokens';
 
 interface TaskBoardProps {
   tasks: PlanTask[];
@@ -50,7 +52,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
         particleCount: 45,
         spread: 60,
         origin: { y: 0.8 },
-        colors: ['#FF5A1F', '#F59E0B', '#10B981', '#FCD34D'],
+        colors: ['#E85D3F', '#E7A83E', '#176B58', '#FAF5EE'],
       });
     }
   };
@@ -103,15 +105,17 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           </p>
         </div>
 
-        <button
+        <motion.button
           type="button"
           className="btn btn-secondary btn-sm"
           onClick={() => setIsAddingTask(!isAddingTask)}
           aria-label="Add custom milestone task"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
           <Plus size={16} />
           <span>Add Custom Task</span>
-        </button>
+        </motion.button>
       </div>
 
       {/* Progress Bar */}
@@ -132,119 +136,127 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
             overflow: 'hidden',
           }}
         >
-          <div
+          <motion.div
             style={{
               height: '100%',
-              width: `${progressPercent}%`,
               background: progressPercent === 100 
                 ? 'var(--color-success)' 
                 : 'linear-gradient(90deg, var(--color-primary), var(--color-gold))',
-              transition: 'width 0.4s ease',
             }}
+            initial={{ width: 0 }}
+            animate={{ width: `${progressPercent}%` }}
+            transition={smoothTransition}
           />
         </div>
       </div>
 
       {/* Add Task Form Collapsible */}
-      {isAddingTask && (
-        <form
-          onSubmit={handleCreateTask}
-          className="card"
-          style={{
-            background: 'var(--bg-input)',
-            borderColor: 'var(--border-gold)',
-            padding: 'var(--space-4)',
-            marginBottom: 'var(--space-5)',
-          }}
-        >
-          <div style={{ fontWeight: 700, marginBottom: 'var(--space-3)', color: 'var(--color-gold-light)' }}>
-            Add New Celebration Task
-          </div>
-          <div className="grid-2">
-            <div className="form-group">
-              <label className="form-label" htmlFor="new-task-title">Task Title</label>
-              <input
-                id="new-task-title"
-                type="text"
-                className="form-input"
-                placeholder="e.g. Order 15 boxes of fresh Kaju Katli for Shagun"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
-                required
-              />
+      <AnimatePresence>
+        {isAddingTask && (
+          <motion.form
+            onSubmit={handleCreateTask}
+            className="card"
+            style={{
+              background: 'var(--bg-input)',
+              borderColor: 'var(--border-gold)',
+              padding: 'var(--space-4)',
+              marginBottom: 'var(--space-5)',
+              overflow: 'hidden',
+            }}
+            variants={accordionVariants}
+            initial="collapsed"
+            animate="expanded"
+            exit="collapsed"
+          >
+            <div style={{ fontWeight: 700, marginBottom: 'var(--space-3)', color: 'var(--color-gold-light)' }}>
+              Add New Celebration Task
+            </div>
+            <div className="grid-2">
+              <div className="form-group">
+                <label className="form-label" htmlFor="new-task-title">Task Title</label>
+                <input
+                  id="new-task-title"
+                  type="text"
+                  className="form-input"
+                  placeholder="e.g. Order 15 boxes of fresh Kaju Katli for Shagun"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="grid-2">
+                <div className="form-group">
+                  <label className="form-label" htmlFor="new-task-phase">Milestone Phase</label>
+                  <select
+                    id="new-task-phase"
+                    className="form-select"
+                    value={newPhase}
+                    onChange={(e) => setNewPhase(e.target.value as TaskMilestonePhase)}
+                  >
+                    {Object.entries(PHASE_LABELS).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label" htmlFor="new-task-priority">Priority</label>
+                  <select
+                    id="new-task-priority"
+                    className="form-select"
+                    value={newPriority}
+                    onChange={(e) => setNewPriority(e.target.value as TaskPriority)}
+                  >
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div className="grid-2">
               <div className="form-group">
-                <label className="form-label" htmlFor="new-task-phase">Milestone Phase</label>
-                <select
-                  id="new-task-phase"
-                  className="form-select"
-                  value={newPhase}
-                  onChange={(e) => setNewPhase(e.target.value as TaskMilestonePhase)}
-                >
-                  {Object.entries(PHASE_LABELS).map(([k, v]) => (
-                    <option key={k} value={k}>{v}</option>
-                  ))}
-                </select>
+                <label className="form-label" htmlFor="new-task-owner">Assigned Family Member / Host</label>
+                <input
+                  id="new-task-owner"
+                  type="text"
+                  className="form-input"
+                  placeholder="e.g. Rohan (Brother), Priya (Sister), Pandit Ji"
+                  value={newOwner}
+                  onChange={(e) => setNewOwner(e.target.value)}
+                />
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="new-task-priority">Priority</label>
-                <select
-                  id="new-task-priority"
-                  className="form-select"
-                  value={newPriority}
-                  onChange={(e) => setNewPriority(e.target.value as TaskPriority)}
-                >
-                  <option value="critical">Critical</option>
-                  <option value="high">High</option>
-                  <option value="medium">Medium</option>
-                  <option value="low">Low</option>
-                </select>
+                <label className="form-label" htmlFor="new-task-category">Category</label>
+                <input
+                  id="new-task-category"
+                  type="text"
+                  className="form-input"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                />
               </div>
             </div>
-          </div>
 
-          <div className="grid-2">
-            <div className="form-group">
-              <label className="form-label" htmlFor="new-task-owner">Assigned Family Member / Host</label>
-              <input
-                id="new-task-owner"
-                type="text"
-                className="form-input"
-                placeholder="e.g. Rohan (Brother), Priya (Sister), Pandit Ji"
-                value={newOwner}
-                onChange={(e) => setNewOwner(e.target.value)}
-              />
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: 'var(--space-2)' }}>
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={() => setIsAddingTask(false)}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-primary btn-sm">
+                Save Task
+              </button>
             </div>
-
-            <div className="form-group">
-              <label className="form-label" htmlFor="new-task-category">Category</label>
-              <input
-                id="new-task-category"
-                type="text"
-                className="form-input"
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: 'var(--space-2)' }}>
-            <button
-              type="button"
-              className="btn btn-ghost btn-sm"
-              onClick={() => setIsAddingTask(false)}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="btn btn-primary btn-sm">
-              Save Task
-            </button>
-          </div>
-        </form>
-      )}
+          </motion.form>
+        )}
+      </AnimatePresence>
 
       {/* Phase Filter Tabs */}
       <div
@@ -258,29 +270,33 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
         role="tablist"
         aria-label="Filter tasks by milestone phase"
       >
-        <button
+        <motion.button
           type="button"
           className={`btn btn-sm ${selectedPhase === 'all' ? 'btn-gold' : 'btn-ghost'}`}
           onClick={() => setSelectedPhase('all')}
           role="tab"
           aria-selected={selectedPhase === 'all'}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
           All Tasks ({tasks.length})
-        </button>
+        </motion.button>
         {(Object.keys(PHASE_LABELS) as TaskMilestonePhase[]).map((phaseKey) => {
           const count = tasks.filter((t) => t.phase === phaseKey).length;
           const isSelected = selectedPhase === phaseKey;
           return (
-            <button
+            <motion.button
               key={phaseKey}
               type="button"
               className={`btn btn-sm ${isSelected ? 'btn-gold' : 'btn-ghost'}`}
               onClick={() => setSelectedPhase(phaseKey)}
               role="tab"
               aria-selected={isSelected}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
               {PHASE_LABELS[phaseKey]} ({count})
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -293,8 +309,9 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           </div>
         ) : (
           filteredTasks.map((task) => (
-            <div
+            <motion.div
               key={task.id}
+              layout
               onClick={() => handleToggle(task)}
               tabIndex={0}
               role="checkbox"
@@ -316,6 +333,8 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
                 gap: 'var(--space-3)',
                 opacity: task.isCompleted ? 0.75 : 1,
               }}
+              whileHover={{ y: -2, transition: { duration: 0.15 } }}
+              whileTap={{ scale: 0.99 }}
             >
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                 <div style={{ color: task.isCompleted ? 'var(--color-success)' : 'var(--text-muted)', marginTop: '2px' }}>
@@ -384,7 +403,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
                     : `D + ${Math.abs(task.daysBeforeEvent)}`}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))
         )}
       </div>

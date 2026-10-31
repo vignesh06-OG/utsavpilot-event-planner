@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Navbar } from './components/common/Navbar';
+import { LandingPage } from './components/landing/LandingPage';
 import { ExecutiveSummary } from './components/dashboard/ExecutiveSummary';
 import { BudgetDashboard } from './components/budget/BudgetDashboard';
 import { TaskBoard } from './components/execution/TaskBoard';
@@ -13,12 +15,15 @@ import { SAMPLE_DEMO_EVENTS } from './domain/eventDefaults';
 import { generateDeterministicPlan } from './engine/deterministicFallback';
 import { updateCategoryBudget } from './engine/budgetEngine';
 import { requestPlanGeneration } from './services/aiClient';
-import { Sparkles, Calendar } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
+import { pageVariants, tabContentVariants, toastVariants } from './motion/motionTokens';
 import './styles/global.css';
 
 const LOCAL_STORAGE_KEY = 'utsavpilot_current_plan_v1';
 
 export function App() {
+  const [currentView, setCurrentView] = useState<'landing' | 'workspace'>('landing');
+
   const [currentPlan, setCurrentPlan] = useState<EventPlan | null>(() => {
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -35,12 +40,41 @@ export function App() {
     defaultSample.isDemoSample = true;
     return defaultSample;
   });
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isWizardOpen, setIsWizardOpen] = useState<boolean>(false);
   const [isReplanOpen, setIsReplanOpen] = useState<boolean>(false);
   const [isPrintOpen, setIsPrintOpen] = useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'budget' | 'tasks' | 'vendors' | 'ideas'>('all');
+  // Keep URL hash in sync with current view and wizard state for back/forward navigation
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (hash === 'wizard') {
+        setIsWizardOpen(true);
+      } else if (hash === 'workspace') {
+        setIsWizardOpen(false);
+        setCurrentView('workspace');
+      } else if (hash === 'landing' || hash === '') {
+        setIsWizardOpen(false);
+        setCurrentView('landing');
+      }
+    };
+
+    window.addEventListener('hashchange', syncFromHash);
+    window.addEventListener('popstate', syncFromHash);
+
+    // Initial sync
+    if (window.location.hash) {
+      syncFromHash();
+    }
+
+    return () => {
+      window.removeEventListener('hashchange', syncFromHash);
+      window.removeEventListener('popstate', syncFromHash);
+    };
+  }, []);
 
   // Save current plan to localStorage whenever it changes
   useEffect(() => {
@@ -58,20 +92,30 @@ export function App() {
     setTimeout(() => setNotification(null), 4500);
   };
 
+  // Safe navigation that updates browser history
+  const navigateTo = (view: 'landing' | 'workspace', openWizard = false) => {
+    setIsWizardOpen(openWizard);
+    setCurrentView(view);
+    const targetHash = openWizard ? 'wizard' : view;
+    if (window.location.hash !== `#${targetHash}`) {
+      window.location.hash = targetHash;
+    }
+  };
+
   // Handle plan generation from Wizard
   const handleGeneratePlan = async (input: EventInput) => {
     setIsLoading(true);
     try {
       const result = await requestPlanGeneration(input);
       setCurrentPlan(result.plan);
-      setIsWizardOpen(false);
+      navigateTo('workspace', false);
       showToast(result.message || 'Plan generated successfully!');
     } catch (err: any) {
       console.error('Error in handleGeneratePlan:', err);
       // Fallback
       const fallback = generateDeterministicPlan(input);
       setCurrentPlan(fallback);
-      setIsWizardOpen(false);
+      navigateTo('workspace', false);
       showToast('Operating in reliable deterministic mode.');
     } finally {
       setIsLoading(false);
@@ -83,8 +127,8 @@ export function App() {
     const plan = generateDeterministicPlan(preset);
     plan.isDemoSample = true;
     setCurrentPlan(plan);
-    setIsWizardOpen(false);
-    showToast(`Loaded sample: "${preset.title}"`);
+    navigateTo('workspace', false);
+    showToast(`Loaded blueprint: "${preset.title}"`);
   };
 
   // Handle category budget update
@@ -160,192 +204,235 @@ export function App() {
     <div className="app-container">
       {/* Top Navbar */}
       <Navbar
-        onNewPlan={() => setIsWizardOpen(true)}
+        currentView={currentView}
+        onNavigate={(view) => navigateTo(view, false)}
+        onNewPlan={() => navigateTo(currentView, true)}
         onLoadPreset={handleLoadPreset}
         onPrint={() => setIsPrintOpen(true)}
         modelUsed={currentPlan?.modelUsed}
       />
 
       {/* Toast Notification Banner */}
-      {notification && (
-        <div
-          role="status"
-          aria-live="polite"
-          style={{
-            position: 'fixed',
-            bottom: '24px',
-            right: '24px',
-            zIndex: 90,
-            background: 'var(--bg-card-elevated)',
-            border: '1px solid var(--border-gold)',
-            boxShadow: 'var(--shadow-lg)',
-            padding: '12px 20px',
-            borderRadius: 'var(--radius-md)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            color: 'var(--text-primary)',
-            fontSize: '0.9rem',
-            animation: 'modalEnter 0.2s ease',
-          }}
-        >
-          <Sparkles size={16} style={{ color: 'var(--color-gold)' }} />
-          <span>{notification}</span>
-        </div>
-      )}
-
-      {/* Main Content Area */}
-      <main className="container" style={{ flex: 1, padding: 'var(--space-6) 0' }}>
-        {/* If Wizard is Open, render Wizard modal/view */}
-        {isWizardOpen ? (
-          <EventWizard
-            initialValues={currentPlan?.input}
-            onSubmit={handleGeneratePlan}
-            onCancel={() => setIsWizardOpen(false)}
-            isLoading={isLoading}
-          />
-        ) : currentPlan ? (
-          <div>
-            {/* Executive Summary Hero Banner */}
-            <ExecutiveSummary
-              plan={currentPlan}
-              onOpenReplan={() => setIsReplanOpen(true)}
-            />
-
-            {/* Navigation Tabs for Easy Section Jumps */}
-            <div
-              style={{
-                display: 'flex',
-                gap: '8px',
-                borderBottom: '1px solid var(--border-subtle)',
-                marginBottom: 'var(--space-6)',
-                overflowX: 'auto',
-                paddingBottom: '8px',
-              }}
-              role="tablist"
-              aria-label="Event dashboard modules"
-            >
-              {[
-                { id: 'all', label: '✦ Complete Overview' },
-                { id: 'budget', label: '₹ Budget & Feasibility' },
-                { id: 'tasks', label: '✓ Milestone Tasks' },
-                { id: 'vendors', label: '🤝 Vendor Transparency' },
-                { id: 'ideas', label: '💡 Cultural & Decor Ideas' },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  className={`btn btn-sm ${activeTab === tab.id ? 'btn-primary' : 'btn-ghost'}`}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  role="tab"
-                  aria-selected={activeTab === tab.id}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            {/* Tab Modules */}
-            {(activeTab === 'all' || activeTab === 'budget') && (
-              <BudgetDashboard
-                report={currentPlan.budgetReport}
-                onUpdateCategoryBudget={handleUpdateCategoryBudget}
-              />
-            )}
-
-            {(activeTab === 'all' || activeTab === 'tasks') && (
-              <TaskBoard
-                tasks={currentPlan.tasks}
-                onToggleTask={handleToggleTask}
-                onAddTask={handleAddTask}
-              />
-            )}
-
-            {(activeTab === 'all' || activeTab === 'vendors') && (
-              <VendorBoard
-                vendors={currentPlan.vendorChecklist}
-                onUpdateVendorStatus={handleUpdateVendorStatus}
-              />
-            )}
-
-            {(activeTab === 'all' || activeTab === 'ideas') && (
-              <PersonalizedIdeas
-                suggestions={currentPlan.suggestions}
-                assumptions={currentPlan.assumptions}
-                unresolvedDecisions={currentPlan.unresolvedDecisions}
-              />
-            )}
-          </div>
-        ) : (
-          /* Empty / Welcome State */
-          <div className="card card-elevated" style={{ textAlign: 'center', padding: 'var(--space-12) var(--space-6)' }}>
-            <div
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: 'var(--radius-xl)',
-                background: 'linear-gradient(135deg, #FF5A1F, #F59E0B)',
-                margin: '0 auto var(--space-4)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-              }}
-            >
-              <Sparkles size={32} />
-            </div>
-            <h2>Welcome to UtsavPilot</h2>
-            <p style={{ maxWidth: '520px', margin: 'var(--space-2) auto var(--space-6)' }}>
-              Create realistic Indian celebration plans with deterministic budget feasibility, transparent vendor checklists, and adaptive replanning.
-            </p>
-            <button
-              type="button"
-              className="btn btn-gold btn-lg"
-              onClick={() => setIsWizardOpen(true)}
-            >
-              <Calendar size={18} />
-              <span>Start Planning Your Celebration</span>
-            </button>
-          </div>
+      <AnimatePresence>
+        {notification && (
+          <motion.div
+            role="status"
+            aria-live="polite"
+            variants={toastVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            style={{
+              position: 'fixed',
+              bottom: '24px',
+              right: '24px',
+              zIndex: 90,
+              background: 'var(--bg-card)',
+              border: '1.5px solid var(--color-vermilion)',
+              boxShadow: 'var(--shadow-xl)',
+              padding: '12px 20px',
+              borderRadius: 'var(--radius-md)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              color: 'var(--text-primary)',
+              fontSize: '0.9rem',
+            }}
+          >
+            <Sparkles size={16} style={{ color: 'var(--color-vermilion)' }} />
+            <span>{notification}</span>
+          </motion.div>
         )}
+      </AnimatePresence>
+
+      {/* Main Content Area with View Transitions */}
+      <main style={{ flex: 1, position: 'relative' }}>
+        <AnimatePresence mode="wait">
+          {/* If Wizard is open, render Wizard view */}
+          {isWizardOpen ? (
+            <motion.div
+              key="view-wizard"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="container"
+              style={{ padding: 'var(--space-8) var(--space-4)' }}
+            >
+              <EventWizard
+                initialValues={currentPlan?.input}
+                onSubmit={handleGeneratePlan}
+                onCancel={() => navigateTo(currentView, false)}
+                isLoading={isLoading}
+              />
+            </motion.div>
+          ) : currentView === 'landing' ? (
+            /* Editorial Landing Experience */
+            <motion.div
+              key="view-landing"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
+              <LandingPage
+                onStartPlanning={() => navigateTo(currentView, true)}
+                onLoadPreset={handleLoadPreset}
+              />
+            </motion.div>
+          ) : currentPlan ? (
+            /* Product Workspace */
+            <motion.div
+              key="view-workspace"
+              variants={pageVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              className="container"
+              style={{ padding: 'var(--space-8) var(--space-4)' }}
+            >
+              {/* Executive Summary Hero Banner */}
+              <ExecutiveSummary
+                plan={currentPlan}
+                onOpenReplan={() => setIsReplanOpen(true)}
+              />
+
+              {/* Navigation Tabs for Easy Section Jumps */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '8px',
+                  borderBottom: '1px solid var(--border-subtle)',
+                  marginBottom: 'var(--space-6)',
+                  overflowX: 'auto',
+                  paddingBottom: '8px',
+                  position: 'relative',
+                }}
+                role="tablist"
+                aria-label="Event dashboard modules"
+              >
+                {[
+                  { id: 'all', label: '✦ Complete Overview' },
+                  { id: 'budget', label: '₹ Budget & Feasibility' },
+                  { id: 'tasks', label: '✓ Milestone Tasks' },
+                  { id: 'vendors', label: '🤝 Vendor Transparency' },
+                  { id: 'ideas', label: '💡 Cultural & Decor Ideas' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    className={`btn btn-sm ${activeTab === tab.id ? 'btn-aubergine' : 'btn-ghost'}`}
+                    style={{ position: 'relative' }}
+                    onClick={() => setActiveTab(tab.id as any)}
+                    role="tab"
+                    aria-selected={activeTab === tab.id}
+                  >
+                    {activeTab === tab.id && (
+                      <motion.div
+                        layoutId="activeTabUnderline"
+                        style={{
+                          position: 'absolute',
+                          bottom: '-9px',
+                          left: '12%',
+                          right: '12%',
+                          height: '2.5px',
+                          background: 'var(--color-vermilion)',
+                          borderRadius: 'var(--radius-full)',
+                        }}
+                        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                      />
+                    )}
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tab Modules with AnimatePresence */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  variants={tabContentVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  {(activeTab === 'all' || activeTab === 'budget') && (
+                    <BudgetDashboard
+                      report={currentPlan.budgetReport}
+                      onUpdateCategoryBudget={handleUpdateCategoryBudget}
+                    />
+                  )}
+
+                  {(activeTab === 'all' || activeTab === 'tasks') && (
+                    <TaskBoard
+                      tasks={currentPlan.tasks}
+                      onToggleTask={handleToggleTask}
+                      onAddTask={handleAddTask}
+                    />
+                  )}
+
+                  {(activeTab === 'all' || activeTab === 'vendors') && (
+                    <VendorBoard
+                      vendors={currentPlan.vendorChecklist}
+                      onUpdateVendorStatus={handleUpdateVendorStatus}
+                    />
+                  )}
+
+                  {(activeTab === 'all' || activeTab === 'ideas') && (
+                    <PersonalizedIdeas
+                      suggestions={currentPlan.suggestions}
+                      assumptions={currentPlan.assumptions}
+                      unresolvedDecisions={currentPlan.unresolvedDecisions}
+                    />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
       </main>
 
-      {/* Adaptive Replan Modal */}
-      {isReplanOpen && currentPlan && (
-        <ReplanModal
-          currentPlan={currentPlan}
-          onApplyReplan={handleApplyReplan}
-          onClose={() => setIsReplanOpen(false)}
-        />
-      )}
+      {/* Adaptive Replan Modal with AnimatePresence */}
+      <AnimatePresence>
+        {isReplanOpen && currentPlan && (
+          <ReplanModal
+            currentPlan={currentPlan}
+            onApplyReplan={handleApplyReplan}
+            onClose={() => setIsReplanOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Print Dossier Modal */}
-      {isPrintOpen && currentPlan && (
-        <PrintDossier
-          plan={currentPlan}
-          onClose={() => setIsPrintOpen(false)}
-        />
-      )}
+      {/* Print Dossier Modal with AnimatePresence */}
+      <AnimatePresence>
+        {isPrintOpen && currentPlan && (
+          <PrintDossier
+            plan={currentPlan}
+            onClose={() => setIsPrintOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Footer */}
+      {/* Professional Footer */}
       <footer
         style={{
           borderTop: '1px solid var(--border-subtle)',
-          padding: 'var(--space-6) 0',
-          background: 'var(--bg-glass)',
+          padding: 'var(--space-8) 0',
+          background: 'var(--bg-canvas-subtle)',
           marginTop: 'auto',
-          fontSize: '0.825rem',
+          fontSize: '0.85rem',
           color: 'var(--text-muted)',
         }}
       >
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 'var(--space-4)' }}>
           <div>
-            <strong>UtsavPilot</strong> — Built for PromptWars Virtual Challenge. Deterministic Math • WCAG 2.1 AA Accessible • Zero Hallucinated Prices.
+            <strong style={{ color: 'var(--text-primary)' }}>UtsavPilot</strong> — Celebration Editorial meets Intelligent Planning. Built for PromptWars Virtual Challenge.
           </div>
-          <div style={{ display: 'flex', gap: '16px' }}>
-            <span>India-First Engine</span>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <span>India-First Heuristics</span>
+            <span>Deterministic Precision</span>
             <span>Gemini Flash Ready</span>
-            <span>Offline Capable</span>
+            <span>WCAG 2.1 AA</span>
           </div>
         </div>
       </footer>

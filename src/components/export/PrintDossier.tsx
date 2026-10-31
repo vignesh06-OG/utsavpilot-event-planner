@@ -1,7 +1,9 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { Printer, X, Download } from 'lucide-react';
 import type { EventPlan } from '../../domain/types';
 import { formatINR } from '../../engine/budgetEngine';
+import { backdropVariants, modalVariants } from '../../motion/motionTokens';
 
 interface PrintDossierProps {
   plan: EventPlan;
@@ -26,8 +28,20 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
   };
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="dossier-title">
-      <div
+    <motion.div
+      className="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dossier-title"
+      variants={backdropVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <motion.div
         className="modal-content"
         style={{
           maxWidth: '880px',
@@ -36,6 +50,10 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
           borderRadius: 'var(--radius-lg)',
           padding: 'var(--space-8)',
         }}
+        variants={modalVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
       >
         {/* Print Actions Bar (hidden during actual paper print) */}
         <div
@@ -60,7 +78,7 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
           <div style={{ display: 'flex', gap: '8px' }}>
             <button
               type="button"
-              className="btn btn-primary btn-sm"
+              className="btn btn-vermilion btn-sm"
               onClick={handlePrint}
               aria-label="Send to printer"
             >
@@ -89,10 +107,10 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
         <div id="printable-dossier" style={{ fontFamily: 'var(--font-body)', lineHeight: 1.6 }}>
           {/* Header */}
           <div style={{ textAlign: 'center', marginBottom: 'var(--space-6)' }}>
-            <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#D97706', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--color-marigold-dark)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               UtsavPilot Master Celebration Plan
             </div>
-            <h1 style={{ color: '#0F172A', fontSize: '2rem', margin: '6px 0' }}>
+            <h1 style={{ color: '#0F172A', fontFamily: 'var(--font-heading)', fontSize: '2.4rem', margin: '6px 0', letterSpacing: '-0.02em' }}>
               {input.title}
             </h1>
             <div style={{ fontSize: '0.95rem', color: '#475569' }}>
@@ -215,7 +233,7 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
             Generated with UtsavPilot AI Celebration Navigator • Verified deterministic calculations • Plan ID: {plan.id}
           </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

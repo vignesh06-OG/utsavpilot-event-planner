@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { 
   X, 
   Sliders, 
@@ -8,6 +9,7 @@ import {
 import type { EventPlan, ReplanDelta, EventTier } from '../../domain/types';
 import { calculateReplanDelta } from '../../engine/replanEngine';
 import { formatINR } from '../../engine/budgetEngine';
+import { backdropVariants, modalVariants } from '../../motion/motionTokens';
 
 interface ReplanModalProps {
   currentPlan: EventPlan;
@@ -41,8 +43,27 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
   };
 
   return (
-    <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="replan-modal-title">
-      <div className="modal-content" style={{ maxWidth: '780px' }}>
+    <motion.div
+      className="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="replan-modal-title"
+      variants={backdropVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <motion.div
+        className="modal-content"
+        style={{ maxWidth: '780px' }}
+        variants={modalVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
         {/* Modal Header */}
         <div
           style={{
@@ -280,7 +301,7 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
               </thead>
               <tbody>
                 {delta.categoryDiffs.map((diff) => (
-                  <tr key={diff.categoryId} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                  <tr key={diff.categoryId} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
                     <td style={{ padding: '6px 4px', fontWeight: 600 }}>{diff.categoryName}</td>
                     <td style={{ padding: '6px 4px', textAlign: 'right', color: 'var(--text-muted)' }}>
                       {formatINR(diff.previousAmount)}
@@ -295,9 +316,9 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
                         fontWeight: 700,
                         color:
                           diff.deltaAmount > 0
-                            ? 'var(--color-primary)'
+                            ? 'var(--color-vermilion)'
                             : diff.deltaAmount < 0
-                            ? 'var(--color-success)'
+                            ? 'var(--color-emerald)'
                             : 'var(--text-muted)',
                       }}
                     >
@@ -312,14 +333,26 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
 
         {/* Modal Actions */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)' }}>
-          <button type="button" className="btn btn-ghost" onClick={onClose}>
+          <motion.button
+            type="button"
+            className="btn btn-ghost"
+            onClick={onClose}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             Cancel
-          </button>
-          <button type="button" className="btn btn-gold" onClick={handleApply}>
+          </motion.button>
+          <motion.button
+            type="button"
+            className="btn btn-vermilion"
+            onClick={handleApply}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+          >
             Apply Changes & Replan
-          </button>
+          </motion.button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };

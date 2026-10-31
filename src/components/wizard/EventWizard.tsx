@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Calendar, 
   Users, 
@@ -14,6 +15,7 @@ import {
 import type { EventInput, EventType, EventTier } from '../../domain/types';
 import { MINIMUM_PER_GUEST_BENCHMARKS } from '../../domain/eventDefaults';
 import { formatINR } from '../../engine/budgetEngine';
+import { tabContentVariants } from '../../motion/motionTokens';
 
 interface EventWizardProps {
   initialValues?: Partial<EventInput>;
@@ -158,13 +160,13 @@ export const EventWizard: React.FC<EventWizardProps> = ({
               }}
               style={{
                 flex: 1,
-                padding: '8px 12px',
-                borderRadius: 'var(--radius-sm)',
-                background: step === st.s ? 'rgba(255, 90, 31, 0.15)' : 'var(--bg-input)',
-                border: `1px solid ${step === st.s ? 'var(--color-primary)' : 'var(--border-subtle)'}`,
-                color: step === st.s ? 'var(--text-primary)' : 'var(--text-muted)',
+                padding: '10px 14px',
+                borderRadius: 'var(--radius-md)',
+                background: step === st.s ? 'rgba(232, 93, 63, 0.12)' : 'var(--bg-input)',
+                border: `1px solid ${step === st.s ? 'var(--color-vermilion)' : 'var(--border-subtle)'}`,
+                color: step === st.s ? 'var(--color-aubergine)' : 'var(--text-muted)',
                 fontSize: '0.85rem',
-                fontWeight: 600,
+                fontWeight: step === st.s ? 700 : 500,
                 textAlign: 'center',
                 cursor: st.s < step ? 'pointer' : 'default',
                 transition: 'all var(--transition-fast)',
@@ -177,9 +179,16 @@ export const EventWizard: React.FC<EventWizardProps> = ({
       </div>
 
       <form onSubmit={handleSubmit} noValidate>
-        {/* STEP 1: Celebration Basics */}
-        {step === 1 && (
-          <div>
+        <AnimatePresence mode="wait">
+          {/* STEP 1: Celebration Basics */}
+          {step === 1 && (
+            <motion.div
+              key="step-1"
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
             <div className="form-group">
               <label className="form-label" htmlFor="event-type-grid">
                 Celebration Type
@@ -201,13 +210,13 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                       className={`card card-interactive ${isSelected ? 'card-elevated' : ''}`}
                       style={{
                         padding: 'var(--space-3)',
-                        borderColor: isSelected ? 'var(--color-primary)' : 'var(--border-subtle)',
-                        background: isSelected ? 'rgba(255, 90, 31, 0.08)' : 'var(--bg-card)',
+                        borderColor: isSelected ? 'var(--color-vermilion)' : 'var(--border-subtle)',
+                        background: isSelected ? 'rgba(232, 93, 63, 0.08)' : 'var(--bg-card)',
                         boxShadow: isSelected ? 'var(--shadow-glow-primary)' : 'none',
                       }}
                     >
                       <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>{meta.icon}</div>
-                      <div style={{ fontWeight: 700, fontSize: '0.95rem', color: isSelected ? 'var(--color-gold-light)' : 'var(--text-primary)' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.95rem', color: isSelected ? 'var(--color-vermilion)' : 'var(--text-primary)' }}>
                         {meta.label}
                       </div>
                       <p style={{ fontSize: '0.775rem', marginTop: '2px' }}>{meta.desc}</p>
@@ -290,12 +299,18 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                 </select>
               </div>
             </div>
-          </div>
-        )}
+          </motion.div>
+          )}
 
-        {/* STEP 2: Scale, Budget & Tier */}
-        {step === 2 && (
-          <div>
+          {/* STEP 2: Scale, Budget & Tier */}
+          {step === 2 && (
+            <motion.div
+              key="step-2"
+              variants={tabContentVariants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+            >
             <div className="grid-2">
               <div className="form-group">
                 <label className="form-label" htmlFor="guest-count">
@@ -437,12 +452,18 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                 })}
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {/* STEP 3: Nuances, Dietary, Accessibility & Review */}
         {step === 3 && (
-          <div>
+          <motion.div
+            key="step-3"
+            variants={tabContentVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+          >
             {/* Dietary */}
             <div className="form-group">
               <label className="form-label">Dietary & Catering Preferences</label>
@@ -582,64 +603,75 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                 Deterministic budget allocations and contingency reserves will be calculated instantly.
               </p>
             </div>
-          </div>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Wizard Controls */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: 'var(--space-6)',
-            paddingTop: 'var(--space-4)',
-            borderTop: '1px solid var(--border-subtle)',
-          }}
-        >
-          <div>
-            {step > 1 ? (
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={() => setStep((step - 1) as any)}
-                disabled={isLoading}
-              >
-                <ChevronLeft size={16} /> Previous
-              </button>
-            ) : onCancel ? (
-              <button type="button" className="btn btn-ghost" onClick={onCancel}>
-                Cancel
-              </button>
-            ) : null}
-          </div>
-
-          <div>
-            {step < 3 ? (
-              <button type="button" className="btn btn-primary" onClick={handleNext}>
-                Continue <ChevronRight size={16} />
-              </button>
-            ) : (
-              <button
-                type="submit"
-                className="btn btn-gold btn-lg pulse-glow"
-                disabled={isLoading}
-                aria-busy={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Sparkles className="animate-spin" size={18} />
-                    <span>Crafting Celebration Plan...</span>
-                  </>
-                ) : (
-                  <>
-                    <Sparkles size={18} />
-                    <span>Generate Actionable Plan</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
+      {/* Wizard Controls */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: 'var(--space-6)',
+          paddingTop: 'var(--space-4)',
+          borderTop: '1px solid var(--border-subtle)',
+        }}
+      >
+        <div>
+          {step > 1 ? (
+            <motion.button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setStep((step - 1) as any)}
+              disabled={isLoading}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <ChevronLeft size={16} /> Previous
+            </motion.button>
+          ) : onCancel ? (
+            <button type="button" className="btn btn-ghost" onClick={onCancel}>
+              Cancel
+            </button>
+          ) : null}
         </div>
+
+        <div>
+          {step < 3 ? (
+            <motion.button
+              type="button"
+              className="btn btn-primary"
+              onClick={handleNext}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Continue <ChevronRight size={16} />
+            </motion.button>
+          ) : (
+            <motion.button
+              type="submit"
+              className="btn btn-gold btn-lg pulse-glow"
+              disabled={isLoading}
+              aria-busy={isLoading}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              {isLoading ? (
+                <>
+                  <Sparkles className="animate-spin" size={18} />
+                  <span>Crafting Celebration Plan...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles size={18} />
+                  <span>Generate Actionable Plan</span>
+                </>
+              )}
+            </motion.button>
+          )}
+        </div>
+      </div>
       </form>
     </div>
   );

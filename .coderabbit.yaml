@@ -1,0 +1,52 @@
+# CodeRabbit Configuration for UtsavPilot
+# Project: UtsavPilot (Celebration & Event Planner)
+
+version: "2"
+language: "en-US"
+tone_instructions: "Be rigorous, objective, and constructive. Focus on demonstrable defects, security vulnerabilities, accessibility issues, and regressions."
+
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "master"
+
+  path_filters:
+    - "!dist/**"
+    - "!node_modules/**"
+    - "!*.lock"
+    - "!package-lock.json"
+
+  path_instructions:
+    - path: "src/engine/**"
+      instructions: |
+        CRITICAL DOMAIN ENGINES:
+        - `budgetEngine.ts` and `replanEngine.ts` contain deterministic Indian celebration budget calculations.
+        - Ensure budget conservation: allocated categories + contingency MUST strictly equal the total budget.
+        - Do not accept changes that introduce floating-point imprecision or remove per-guest feasibility benchmarks.
+    
+    - path: "server/**"
+      instructions: |
+        SECURITY & PROXY BOUNDARY:
+        - Enforce input sanitization against prompt injection.
+        - Verify rate limiter integrity.
+        - Ensure zero Gemini API key leakage to client headers or responses.
+    
+    - path: "src/components/**"
+      instructions: |
+        ACCESSIBILITY & MOTION:
+        - Check for semantic HTML elements and ARIA labels.
+        - Ensure all motion components respect `prefers-reduced-motion`.
+        - Prevent layout shifts or horizontal clipping on mobile screens (360px-390px).
+
+chat:
+  auto_reply: true

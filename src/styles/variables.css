@@ -1,71 +1,87 @@
+/**
+ * UtsavPilot Design System Tokens
+ * Theme: "Celebration Editorial meets Intelligent Planning"
+ *
+ * Decision Rationale:
+ * Transitioned from a generic tech midnight-navy to an authentic Indian celebration
+ * editorial palette. Warm Ivory (#FAF5EE) provides a clean, tactile paper-like canvas;
+ * Deep Aubergine (#28152F) delivers majestic, high-contrast typography;
+ * Vermilion (#E85D3F) signals ceremonial energy; Marigold (#E7A83E) reflects auspicious
+ * warmth and festive gold; Deep Emerald (#176B58) anchors verified feasibility.
+ */
+
 :root {
-  /* Colors */
-  --bg-primary: #0A0F1E;
-  --bg-secondary: #101828;
-  --bg-card: #152033;
-  --bg-card-elevated: #1B2942;
-  --bg-card-hover: #223250;
-  --bg-glass: rgba(21, 32, 51, 0.85);
-  --bg-input: #0E1524;
+  /* Core Editorial Palette */
+  --bg-canvas: #FAF5EE;
+  --bg-canvas-subtle: #F4EDE0;
+  --bg-card: #FFFFFF;
+  --bg-card-elevated: #FFFDF9;
+  --bg-card-muted: #F8F3EA;
+  --bg-card-hover: #FCFAF6;
+  --bg-input: #FFFFFF;
+  --bg-glass: rgba(250, 245, 238, 0.88);
 
-  --color-primary: #FF5A1F;
-  --color-primary-hover: #FF733E;
-  --color-primary-glow: rgba(255, 90, 31, 0.28);
+  /* Deep Aubergine Nocturne (For Hero & Dark Containers) */
+  --bg-dark-primary: #28152F;
+  --bg-dark-elevated: #351C3E;
+  --bg-dark-card: #3A2044;
+  --bg-dark-glass: rgba(40, 21, 47, 0.92);
 
-  --color-gold: #F59E0B;
-  --color-gold-light: #FCD34D;
-  --color-gold-dark: #D97706;
-  --color-gold-glow: rgba(245, 158, 11, 0.22);
+  /* Color Accents */
+  --color-vermilion: #E85D3F;
+  --color-vermilion-hover: #D74B2D;
+  --color-vermilion-light: #FDF1EE;
+  --color-vermilion-glow: rgba(232, 93, 63, 0.28);
 
-  --color-success: #10B981;
-  --color-success-bg: rgba(16, 185, 129, 0.12);
-  --color-success-border: rgba(16, 185, 129, 0.3);
+  --color-marigold: #E7A83E;
+  --color-marigold-hover: #D6972D;
+  --color-marigold-light: #FDF7EB;
+  --color-marigold-dark: #B97D1A;
+  --color-marigold-glow: rgba(231, 168, 62, 0.25);
 
-  --color-warning: #F59E0B;
-  --color-warning-bg: rgba(245, 158, 11, 0.12);
-  --color-warning-border: rgba(245, 158, 11, 0.3);
+  --color-emerald: #176B58;
+  --color-emerald-light: #EDF7F4;
+  --color-emerald-border: rgba(23, 107, 88, 0.3);
 
-  --color-danger: #EF4444;
-  --color-danger-bg: rgba(239, 68, 68, 0.12);
-  --color-danger-border: rgba(239, 68, 68, 0.3);
+  --color-danger: #D9383A;
+  --color-danger-bg: #FDF2F2;
+  --color-danger-border: rgba(217, 56, 58, 0.3);
 
-  --color-info: #6366F1;
-  --color-info-bg: rgba(99, 102, 241, 0.12);
-  --color-info-border: rgba(99, 102, 241, 0.3);
+  /* Text & Typography */
+  --text-primary: #28152F;
+  --text-secondary: #584660;
+  --text-muted: #84738C;
+  --text-inverse: #FAF5EE;
+  --text-inverse-muted: #C7B8CE;
 
-  /* Typography */
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --text-inverse: #0B111E;
-
-  /* Borders & Radii */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-medium: rgba(255, 255, 255, 0.15);
-  --border-strong: rgba(255, 255, 255, 0.25);
-  --border-gold: rgba(245, 158, 11, 0.35);
+  /* Borders & Separation */
+  --border-subtle: rgba(40, 21, 47, 0.08);
+  --border-medium: rgba(40, 21, 47, 0.16);
+  --border-strong: rgba(40, 21, 47, 0.28);
+  --border-gold: rgba(231, 168, 62, 0.35);
+  --border-vermilion: rgba(232, 93, 63, 0.35);
 
   --radius-xs: 4px;
   --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 24px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-full: 9999px;
 
-  /* Shadows */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
-  --shadow-glow-primary: 0 0 20px rgba(255, 90, 31, 0.3);
-  --shadow-glow-gold: 0 0 20px rgba(245, 158, 11, 0.25);
+  /* Shadows - Warm Diffuse Editorial Lighting */
+  --shadow-sm: 0 2px 6px rgba(40, 21, 47, 0.04);
+  --shadow-md: 0 6px 18px rgba(40, 21, 47, 0.06);
+  --shadow-lg: 0 16px 36px -6px rgba(40, 21, 47, 0.10);
+  --shadow-xl: 0 24px 56px -10px rgba(40, 21, 47, 0.16);
 
-  /* Accessible Focus */
-  --focus-ring: 0 0 0 3px rgba(245, 158, 11, 0.55);
+  /* Accessible Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(232, 93, 63, 0.55);
 
-  /* Spacing */
+  /* Spacing Scale */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -75,9 +91,11 @@
   --space-8: 32px;
   --space-10: 40px;
   --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
 
-  /* Transitions */
+  /* Motion & Transitions */
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-normal: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

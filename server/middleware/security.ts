@@ -38,8 +38,11 @@ export function rateLimiter(req: Request, res: Response, next: NextFunction) {
 export function sanitizeInput(input: string): string {
   if (typeof input !== 'string') return '';
   return input
-    .replace(/```/g, '') // remove markdown code blocks that can confuse model
+    .replace(/<script[\s\S]*?<\/script>/gi, '') // remove script tags and content
+    .replace(/<style[\s\S]*?<\/style>/gi, '') // remove style tags and content
     .replace(/<system>[\s\S]*?<\/system>/gi, '') // remove XML system tags
+    .replace(/<[^>]+>/g, '') // strip remaining HTML tags
+    .replace(/```/g, '') // remove markdown code blocks that can confuse model
     .replace(/ignore (previous|all) instructions/gi, '[Filtered]')
     .trim()
     .slice(0, 1500); // strict length restriction
