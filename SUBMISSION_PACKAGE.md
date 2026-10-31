@@ -14,7 +14,7 @@
 - **Verified Public Deployment URL:** [https://vignesh06-og.github.io/utsavpilot-event-planner/](https://vignesh06-og.github.io/utsavpilot-event-planner/)
 - **Demo Video URL:** *Pending User Recording* (To be recorded and linked by host; no simulated URL fabricated)
 - **Screenshot Directory:** [`docs/screenshots/`](https://github.com/vignesh06-OG/utsavpilot-event-planner/tree/main/docs/screenshots)
-- **Commit SHA:** `8130737` (Final Production Revision)
+- **Commit SHA:** `d4ed423` (Final Audited Revision; includes WAI-ARIA modal Escape dismissal)
 
 ---
 
