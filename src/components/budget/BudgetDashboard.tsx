@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   IndianRupee, 
@@ -27,10 +27,10 @@ const CATEGORY_COLORS = [
   '#64748B', // Slate Contingency
 ];
 
-export const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
+export const BudgetDashboard = ({
   report,
   onUpdateCategoryBudget,
-}) => {
+}: BudgetDashboardProps) => {
   const [expandedCategoryId, setExpandedCategoryId] = useState<string | null>(null);
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [editAmount, setEditAmount] = useState<number>(0);

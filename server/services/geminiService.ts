@@ -3,6 +3,25 @@ import { calculateBudgetFeasibility, formatINR } from '../../src/engine/budgetEn
 import { generateDeterministicPlan } from '../../src/engine/deterministicFallback';
 import { sanitizeInput } from '../middleware/security';
 
+interface RawGeminiTask {
+  id?: string;
+  title?: string;
+  category?: string;
+  phase?: string;
+  daysBeforeEvent?: number;
+  priority?: string;
+  notes?: string;
+}
+
+interface RawGeminiVendor {
+  id?: string;
+  category?: string;
+  serviceTitle?: string;
+  benchmarkCostRange?: string;
+  keyQuestionsToAsk?: string[];
+  verificationTip?: string;
+}
+
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 
 export async function generateGeminiEventPlan(input: EventInput): Promise<EventPlan> {
@@ -133,17 +152,17 @@ JSON Output Requirements (Do not wrap in markdown or backticks, return ONLY vali
       input,
       summary: parsed.summary || `${input.title} - Indian celebration plan`,
       budgetReport: deterministicBudget,
-      tasks: Array.isArray(parsed.tasks) && parsed.tasks.length > 0 ? parsed.tasks.map((t: any, idx: number) => ({
+      tasks: Array.isArray(parsed.tasks) && parsed.tasks.length > 0 ? parsed.tasks.map((t: RawGeminiTask, idx: number) => ({
         id: t.id || `task_${idx + 1}`,
         title: t.title || 'Event Milestone',
         category: t.category || 'General',
-        phase: ['months_before', 'weeks_before', 'days_before', 'day_of', 'post_event'].includes(t.phase) ? t.phase : 'weeks_before',
+        phase: (t.phase && ['months_before', 'weeks_before', 'days_before', 'day_of', 'post_event'].includes(t.phase)) ? t.phase : 'weeks_before',
         daysBeforeEvent: typeof t.daysBeforeEvent === 'number' ? t.daysBeforeEvent : 14,
         isCompleted: false,
-        priority: ['critical', 'high', 'medium', 'low'].includes(t.priority) ? t.priority : 'medium',
+        priority: (t.priority && ['critical', 'high', 'medium', 'low'].includes(t.priority)) ? t.priority : 'medium',
         notes: t.notes || '',
       })) : generateDeterministicPlan(input).tasks,
-      vendorChecklist: Array.isArray(parsed.vendorChecklist) && parsed.vendorChecklist.length > 0 ? parsed.vendorChecklist.map((v: any, idx: number) => ({
+      vendorChecklist: Array.isArray(parsed.vendorChecklist) && parsed.vendorChecklist.length > 0 ? parsed.vendorChecklist.map((v: RawGeminiVendor, idx: number) => ({
         id: v.id || `v_${idx + 1}`,
         category: v.category || 'Vendor',
         serviceTitle: v.serviceTitle || 'Service Partner',
@@ -167,8 +186,9 @@ JSON Output Requirements (Do not wrap in markdown or backticks, return ONLY vali
     };
 
     return plan;
-  } catch (err: any) {
-    console.warn(`[GeminiService] Error calling Gemini (${err.message}). Safe failover to deterministic engine.`);
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.warn(`[GeminiService] Error calling Gemini (${errMsg}). Safe failover to deterministic engine.`);
     return generateDeterministicPlan(input);
   }
 }

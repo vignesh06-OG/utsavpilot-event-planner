@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Sparkles, 
@@ -13,6 +13,14 @@ import {
 import { CelebrationImage } from '../common/CelebrationImage';
 import { getAssetUrl } from '../../utils/assetHelper';
 import { SAMPLE_DEMO_EVENTS } from '../../domain/eventDefaults';
+import type { EventInput } from '../../domain/types';
+import { formatINR } from '../../engine/budgetEngine';
+import { 
+  fadeInUpVariants, 
+  staggerContainerVariants, 
+  staggerItemVariants, 
+  tabContentVariants 
+} from '../../motion/motionTokens';
 
 const PRESET_IMAGES: Record<string, { src: string; alt: string; tag: string }> = {
   wedding: {
@@ -36,24 +44,16 @@ const PRESET_IMAGES: Record<string, { src: string; alt: string; tag: string }> =
     tag: 'Youth Festival',
   },
 };
-import type { EventInput } from '../../domain/types';
-import { formatINR } from '../../engine/budgetEngine';
-import { 
-  fadeInUpVariants, 
-  staggerContainerVariants, 
-  staggerItemVariants, 
-  tabContentVariants 
-} from '../../motion/motionTokens';
 
 interface LandingPageProps {
   onStartPlanning: () => void;
   onLoadPreset: (preset: EventInput) => void;
 }
 
-export const LandingPage: React.FC<LandingPageProps> = ({
+export const LandingPage = ({
   onStartPlanning,
   onLoadPreset,
-}) => {
+}: LandingPageProps) => {
   // State for interactive before/after demonstration
   const [demoScenario, setDemoScenario] = useState<'base' | 'adapted'>('base');
 
@@ -538,9 +538,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       adapted: '₹2,35,000 (7.8%)',
                       note: 'Transparent remaining balance',
                     },
-                  ].map((item, idx) => (
+                  ].map((item) => (
                     <motion.div
-                      key={idx}
+                      key={item.cat}
                       whileHover={{ y: -3, transition: { duration: 0.15 } }}
                       style={{
                         background: 'var(--bg-canvas-subtle)',
@@ -803,11 +803,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             variants={staggerContainerVariants}
             className="grid-4"
           >
-            {SAMPLE_DEMO_EVENTS.map((preset, idx) => {
+            {SAMPLE_DEMO_EVENTS.map((preset) => {
               const imgMeta = PRESET_IMAGES[preset.eventType] || PRESET_IMAGES.wedding;
               return (
                 <motion.div
-                  key={idx}
+                  key={preset.title}
                   tabIndex={0}
                   role="button"
                   onClick={() => onLoadPreset(preset)}

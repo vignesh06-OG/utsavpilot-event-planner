@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   UtensilsCrossed, 
   Palette, 
@@ -15,11 +14,11 @@ interface PersonalizedIdeasProps {
   unresolvedDecisions: string[];
 }
 
-export const PersonalizedIdeas: React.FC<PersonalizedIdeasProps> = ({
+export const PersonalizedIdeas = ({
   suggestions,
   assumptions,
   unresolvedDecisions,
-}) => {
+}: PersonalizedIdeasProps) => {
   return (
     <div style={{ marginBottom: 'var(--space-6)' }}>
       {/* 2-Column Grid of Inspiration Cards */}
@@ -31,8 +30,8 @@ export const PersonalizedIdeas: React.FC<PersonalizedIdeasProps> = ({
             <h3 style={{ fontSize: '1.1rem' }}>Decor & Aesthetic Ambience</h3>
           </div>
           <ul style={{ paddingLeft: '16px', listStyleType: 'disc' }}>
-            {suggestions.themeAndDecor.map((item, idx) => (
-              <li key={idx} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+            {suggestions.themeAndDecor.map((item) => (
+              <li key={item} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
                 {item}
               </li>
             ))}
@@ -46,8 +45,8 @@ export const PersonalizedIdeas: React.FC<PersonalizedIdeasProps> = ({
             <h3 style={{ fontSize: '1.1rem' }}>Food, Chaat & Dining Ideas</h3>
           </div>
           <ul style={{ paddingLeft: '16px', listStyleType: 'disc' }}>
-            {suggestions.foodAndBeverage.map((item, idx) => (
-              <li key={idx} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+            {suggestions.foodAndBeverage.map((item) => (
+              <li key={item} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
                 {item}
               </li>
             ))}
@@ -63,8 +62,8 @@ export const PersonalizedIdeas: React.FC<PersonalizedIdeasProps> = ({
             <h3 style={{ fontSize: '1.1rem' }}>Entertainment & Rituals</h3>
           </div>
           <ul style={{ paddingLeft: '16px', listStyleType: 'disc' }}>
-            {suggestions.entertainmentAndRituals.map((item, idx) => (
-              <li key={idx} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+            {suggestions.entertainmentAndRituals.map((item) => (
+              <li key={item} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
                 {item}
               </li>
             ))}
@@ -78,8 +77,8 @@ export const PersonalizedIdeas: React.FC<PersonalizedIdeasProps> = ({
             <h3 style={{ fontSize: '1.1rem' }}>Accessibility & Senior Comfort</h3>
           </div>
           <ul style={{ paddingLeft: '16px', listStyleType: 'disc' }}>
-            {suggestions.accessibilityPlan.map((item, idx) => (
-              <li key={idx} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
+            {suggestions.accessibilityPlan.map((item) => (
+              <li key={item} style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginBottom: '6px' }}>
                 {item}
               </li>
             ))}
@@ -97,8 +96,8 @@ export const PersonalizedIdeas: React.FC<PersonalizedIdeasProps> = ({
             </h4>
           </div>
           <ul style={{ paddingLeft: '16px', listStyleType: 'circle' }}>
-            {assumptions.map((asm, idx) => (
-              <li key={idx} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+            {assumptions.map((asm) => (
+              <li key={asm} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
                 {asm}
               </li>
             ))}
@@ -113,8 +112,8 @@ export const PersonalizedIdeas: React.FC<PersonalizedIdeasProps> = ({
             </h4>
           </div>
           <ul style={{ paddingLeft: '16px', listStyleType: 'circle' }}>
-            {unresolvedDecisions.map((dec, idx) => (
-              <li key={idx} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
+            {unresolvedDecisions.map((dec) => (
+              <li key={dec} style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '4px' }}>
                 {dec}
               </li>
             ))}

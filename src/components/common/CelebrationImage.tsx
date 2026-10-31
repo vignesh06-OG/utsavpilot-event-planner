@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 import { getAssetUrl } from '../../utils/assetHelper';
 import { Sparkles } from 'lucide-react';
 
@@ -8,27 +8,29 @@ export interface CelebrationImageProps {
   alt: string;
   aspectRatio?: string;
   className?: string;
-  style?: React.CSSProperties;
-  imgStyle?: React.CSSProperties;
+  style?: CSSProperties;
+  imgStyle?: CSSProperties;
   priority?: boolean;
-  overlay?: React.ReactNode;
+  overlay?: ReactNode;
   fallbackTitle?: string;
   borderRadius?: string;
 }
 
-export const CelebrationImage: React.FC<CelebrationImageProps> = ({
+const EMPTY_STYLE: CSSProperties = {};
+
+export const CelebrationImage = ({
   src,
   webpSrc,
   alt,
   aspectRatio = '16/10',
   className = '',
-  style = {},
-  imgStyle = {},
+  style = EMPTY_STYLE,
+  imgStyle = EMPTY_STYLE,
   priority = false,
   overlay,
   fallbackTitle = 'Utsav Celebration',
   borderRadius = 'var(--radius-lg)',
-}) => {
+}: CelebrationImageProps) => {
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 

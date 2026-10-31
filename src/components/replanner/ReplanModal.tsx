@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
   X, 
@@ -17,11 +17,11 @@ interface ReplanModalProps {
   onClose: () => void;
 }
 
-export const ReplanModal: React.FC<ReplanModalProps> = ({
+export const ReplanModal = ({
   currentPlan,
   onApplyReplan,
   onClose,
-}) => {
+}: ReplanModalProps) => {
   const [budget, setBudget] = useState<number>(currentPlan.input.totalBudget);
   const [guestCount, setGuestCount] = useState<number>(currentPlan.input.guestCount);
   const [date, setDate] = useState<string>(currentPlan.input.date);

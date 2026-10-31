@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Calendar, 
@@ -32,13 +32,27 @@ const TIER_DESCRIPTIONS: Record<EventTier, { title: string; desc: string }> = {
   luxury: { title: 'Luxury / Royal', desc: 'Palatial destination, custom designer decor, celebrity artists' },
 };
 
-export const EventWizard: React.FC<EventWizardProps> = ({
+export type WizardStep = 1 | 2 | 3;
+
+interface WizardStepTab {
+  s: WizardStep;
+  label: string;
+  short: string;
+}
+
+const WIZARD_STEPS: readonly WizardStepTab[] = [
+  { s: 1, label: '1. Basics & Date', short: '1. Basics' },
+  { s: 2, label: '2. Scale & Budget', short: '2. Budget' },
+  { s: 3, label: '3. Nuances & Review', short: '3. Review' },
+];
+
+export const EventWizard = ({
   initialValues,
   onSubmit,
   onCancel,
   isLoading,
-}) => {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+}: EventWizardProps) => {
+  const [step, setStep] = useState<WizardStep>(1);
 
   const [eventType, setEventType] = useState<EventType>(initialValues?.eventType || 'wedding');
   // Title starts empty for new plans so contextual placeholders and examples are clearly displayed
@@ -165,15 +179,11 @@ export const EventWizard: React.FC<EventWizardProps> = ({
 
         {/* Step tabs */}
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
-          {[
-            { s: 1, label: '1. Basics & Date', short: '1. Basics' },
-            { s: 2, label: '2. Scale & Budget', short: '2. Budget' },
-            { s: 3, label: '3. Nuances & Review', short: '3. Review' },
-          ].map((st) => (
+          {WIZARD_STEPS.map((st) => (
             <div
               key={st.s}
               onClick={() => {
-                if (st.s < step) setStep(st.s as any);
+                if (st.s < step) setStep(st.s);
               }}
               style={{
                 flex: 1,
@@ -719,7 +729,7 @@ export const EventWizard: React.FC<EventWizardProps> = ({
             <motion.button
               type="button"
               className="btn btn-secondary"
-              onClick={() => setStep((step - 1) as any)}
+              onClick={() => setStep(step === 3 ? 2 : 1)}
               disabled={isLoading}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Building2, 
@@ -22,10 +22,10 @@ const STATUS_LABELS: Record<VendorStatus, { label: string; badgeClass: string }>
   booked: { label: 'Booked & Confirmed', badgeClass: 'badge-success' },
 };
 
-export const VendorBoard: React.FC<VendorBoardProps> = ({
+export const VendorBoard = ({
   vendors,
   onUpdateVendorStatus,
-}) => {
+}: VendorBoardProps) => {
   const [expandedVendorId, setExpandedVendorId] = useState<string | null>(null);
 
   const toggleExpand = (id: string) => {
@@ -182,8 +182,8 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
                         Key Questions to Ask This Vendor:
                       </div>
                       <ul style={{ paddingLeft: '18px', listStyleType: 'circle' }}>
-                        {v.keyQuestionsToAsk.map((q, idx) => (
-                          <li key={idx} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '3px' }}>
+                        {v.keyQuestionsToAsk.map((q) => (
+                          <li key={q} style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '3px' }}>
                             {q}
                           </li>
                         ))}

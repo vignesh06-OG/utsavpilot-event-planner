@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sparkles, Calendar, Printer, ShieldCheck, Cpu, LayoutDashboard, Compass, Menu, X } from 'lucide-react';
 import { SAMPLE_DEMO_EVENTS } from '../../domain/eventDefaults';
@@ -13,14 +13,14 @@ interface NavbarProps {
   modelUsed?: 'gemini-flash' | 'deterministic-fallback';
 }
 
-export const Navbar: React.FC<NavbarProps> = ({
+export const Navbar = ({
   currentView,
   onNavigate,
   onNewPlan,
   onLoadPreset,
   onPrint,
   modelUsed,
-}) => {
+}: NavbarProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleMobileNav = (action: () => void) => {

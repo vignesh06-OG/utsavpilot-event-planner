@@ -43,8 +43,9 @@ export async function requestPlanGeneration(input: EventInput): Promise<PlanGene
       isFallback: true,
       message: 'Server unavailable. Switched to offline deterministic engine.',
     };
-  } catch (err: any) {
-    console.warn('[Client] Network / API error. Falling back gracefully to deterministic engine:', err.message);
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : String(err);
+    console.warn('[Client] Network / API error. Falling back gracefully to deterministic engine:', errMsg);
     const fallbackPlan = generateDeterministicPlan(input);
     return {
       plan: fallbackPlan,

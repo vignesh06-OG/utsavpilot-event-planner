@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Printer, X, Download } from 'lucide-react';
 import type { EventPlan } from '../../domain/types';
@@ -10,7 +10,7 @@ interface PrintDossierProps {
   onClose: () => void;
 }
 
-export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => {
+export const PrintDossier = ({ plan, onClose }: PrintDossierProps) => {
   const { input, budgetReport, summary, tasks, vendorChecklist, suggestions } = plan;
 
   // Accessible Escape key listener for dialog dismissal

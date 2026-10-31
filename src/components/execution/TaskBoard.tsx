@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   CheckSquare, 
@@ -25,11 +25,11 @@ const PHASE_LABELS: Record<TaskMilestonePhase, string> = {
   post_event: 'Post-Event Wrapup',
 };
 
-export const TaskBoard: React.FC<TaskBoardProps> = ({
+export const TaskBoard = ({
   tasks,
   onToggleTask,
   onAddTask,
-}) => {
+}: TaskBoardProps) => {
   const [selectedPhase, setSelectedPhase] = useState<TaskMilestonePhase | 'all'>('all');
   const [isAddingTask, setIsAddingTask] = useState<boolean>(false);
 

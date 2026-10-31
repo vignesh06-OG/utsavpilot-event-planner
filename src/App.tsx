@@ -19,6 +19,21 @@ import { Sparkles } from 'lucide-react';
 import { pageVariants, tabContentVariants, toastVariants } from './motion/motionTokens';
 import './styles/global.css';
 
+export type DashboardTab = 'all' | 'budget' | 'tasks' | 'vendors' | 'ideas';
+
+interface DashboardTabItem {
+  id: DashboardTab;
+  label: string;
+}
+
+const DASHBOARD_TABS: readonly DashboardTabItem[] = [
+  { id: 'all', label: '✦ Complete Overview' },
+  { id: 'budget', label: '₹ Budget & Feasibility' },
+  { id: 'tasks', label: '✓ Milestone Tasks' },
+  { id: 'vendors', label: '🤝 Vendor Transparency' },
+  { id: 'ideas', label: '💡 Cultural & Decor Ideas' },
+];
+
 const LOCAL_STORAGE_KEY = 'utsavpilot_current_plan_v1';
 
 export function App() {
@@ -46,7 +61,7 @@ export function App() {
   const [isReplanOpen, setIsReplanOpen] = useState<boolean>(false);
   const [isPrintOpen, setIsPrintOpen] = useState<boolean>(false);
   const [notification, setNotification] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'all' | 'budget' | 'tasks' | 'vendors' | 'ideas'>('all');
+  const [activeTab, setActiveTab] = useState<DashboardTab>('all');
   // Keep URL hash in sync with current view and wizard state for back/forward navigation
   useEffect(() => {
     const syncFromHash = () => {
@@ -110,8 +125,9 @@ export function App() {
       setCurrentPlan(result.plan);
       navigateTo('workspace', false);
       showToast(result.message || 'Plan generated successfully!');
-    } catch (err: any) {
-      console.error('Error in handleGeneratePlan:', err);
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error('Error in handleGeneratePlan:', errMsg);
       // Fallback
       const fallback = generateDeterministicPlan(input);
       setCurrentPlan(fallback);
@@ -314,19 +330,13 @@ export function App() {
                 role="tablist"
                 aria-label="Event dashboard modules"
               >
-                {[
-                  { id: 'all', label: '✦ Complete Overview' },
-                  { id: 'budget', label: '₹ Budget & Feasibility' },
-                  { id: 'tasks', label: '✓ Milestone Tasks' },
-                  { id: 'vendors', label: '🤝 Vendor Transparency' },
-                  { id: 'ideas', label: '💡 Cultural & Decor Ideas' },
-                ].map((tab) => (
+                {DASHBOARD_TABS.map((tab) => (
                   <button
                     key={tab.id}
                     type="button"
                     className={`btn btn-sm ${activeTab === tab.id ? 'btn-aubergine' : 'btn-ghost'}`}
                     style={{ position: 'relative' }}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id)}
                     role="tab"
                     aria-selected={activeTab === tab.id}
                   >

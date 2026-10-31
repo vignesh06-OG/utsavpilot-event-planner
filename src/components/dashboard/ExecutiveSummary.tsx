@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Calendar, 
@@ -20,17 +20,17 @@ interface ExecutiveSummaryProps {
   onOpenReplan: () => void;
 }
 
-export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpenReplan }) => {
+export const ExecutiveSummary = ({ plan, onOpenReplan }: ExecutiveSummaryProps) => {
   const { input, budgetReport, summary, modelUsed, isDemoSample } = plan;
 
-  // Calculate days remaining in pure memoized state
-  const [now] = React.useState(() => Date.now());
-  const daysRemaining = React.useMemo(() => {
+  // Stable mount timestamp to satisfy React Compiler purity rules
+  const [mountTime] = useState(() => Date.now());
+  const daysRemaining = useMemo(() => {
     const eventTime = new Date(input.date).getTime();
-    return Math.ceil((eventTime - now) / (1000 * 60 * 60 * 24));
-  }, [input.date, now]);
+    return Math.ceil((eventTime - mountTime) / (1000 * 60 * 60 * 24));
+  }, [input.date, mountTime]);
 
-  const watermarkImage = React.useMemo(() => {
+  const watermarkImage = useMemo(() => {
     switch (input.eventType) {
       case 'birthday':
         return 'birthday_celebration.webp';
