@@ -264,6 +264,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
           display: 'flex',
           gap: '8px',
           overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
           paddingBottom: 'var(--space-2)',
           marginBottom: 'var(--space-4)',
         }}
@@ -332,22 +333,25 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
                 justifyContent: 'space-between',
                 gap: 'var(--space-3)',
                 opacity: task.isCompleted ? 0.75 : 1,
+                flexWrap: 'wrap',
               }}
               whileHover={{ y: -2, transition: { duration: 0.15 } }}
               whileTap={{ scale: 0.99 }}
             >
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', flex: '1 1 200px', minWidth: 0 }}>
                 <div style={{ color: task.isCompleted ? 'var(--color-success)' : 'var(--text-muted)', marginTop: '2px' }}>
                   {task.isCompleted ? <CheckSquare size={18} /> : <Square size={18} />}
                 </div>
 
-                <div>
+                <div style={{ minWidth: 0, flex: 1 }}>
                   <div
                     style={{
                       fontWeight: 600,
                       fontSize: '0.925rem',
                       textDecoration: task.isCompleted ? 'line-through' : 'none',
                       color: task.isCompleted ? 'var(--text-muted)' : 'var(--text-primary)',
+                      wordBreak: 'break-word',
+                      overflowWrap: 'anywhere',
                     }}
                   >
                     {task.title}

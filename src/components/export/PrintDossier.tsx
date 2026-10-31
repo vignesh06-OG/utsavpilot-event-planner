@@ -57,7 +57,7 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
           background: '#FFFFFF',
           color: '#1E293B',
           borderRadius: 'var(--radius-lg)',
-          padding: 'var(--space-8)',
+          padding: 'clamp(1rem, 3vw, 2rem)',
         }}
         variants={modalVariants}
         initial="initial"
@@ -73,6 +73,8 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
             marginBottom: 'var(--space-6)',
             paddingBottom: 'var(--space-4)',
             borderBottom: '2px solid #E2E8F0',
+            flexWrap: 'wrap',
+            gap: '12px',
           }}
         >
           <div>
@@ -84,10 +86,10 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             <button
               type="button"
-              className="btn btn-vermilion btn-sm"
+              className="btn btn-primary btn-sm"
               onClick={handlePrint}
               aria-label="Send to printer"
             >
@@ -138,36 +140,38 @@ export const PrintDossier: React.FC<PrintDossierProps> = ({ plan, onClose }) => 
             <h3 style={{ color: '#0F172A', fontSize: '1.15rem', marginBottom: '10px', borderBottom: '2px solid #E2E8F0', paddingBottom: '4px' }}>
               Deterministic Budget Breakdown
             </h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
-              <thead>
-                <tr style={{ background: '#F1F5F9', borderBottom: '1px solid #CBD5E1' }}>
-                  <th style={{ textAlign: 'left', padding: '8px' }}>Category</th>
-                  <th style={{ textAlign: 'right', padding: '8px' }}>Allocated Amount</th>
-                  <th style={{ textAlign: 'right', padding: '8px' }}>% of Total</th>
-                  <th style={{ textAlign: 'left', padding: '8px' }}>Cost Provenance</th>
-                </tr>
-              </thead>
-              <tbody>
-                {budgetReport.categories.map((c) => (
-                  <tr key={c.id} style={{ borderBottom: '1px solid #E2E8F0' }}>
-                    <td style={{ padding: '8px', fontWeight: 600, color: '#1E293B' }}>{c.name}</td>
-                    <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700, color: '#0F172A' }}>
-                      {formatINR(c.allocatedAmount)}
-                    </td>
-                    <td style={{ padding: '8px', textAlign: 'right', color: '#475569' }}>{c.percentage}%</td>
-                    <td style={{ padding: '8px', color: '#64748B', textTransform: 'capitalize' }}>{c.provenance}</td>
+            <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '440px', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
+                <thead>
+                  <tr style={{ background: '#F1F5F9', borderBottom: '1px solid #CBD5E1' }}>
+                    <th style={{ textAlign: 'left', padding: '8px' }}>Category</th>
+                    <th style={{ textAlign: 'right', padding: '8px' }}>Allocated Amount</th>
+                    <th style={{ textAlign: 'right', padding: '8px' }}>% of Total</th>
+                    <th style={{ textAlign: 'left', padding: '8px' }}>Cost Provenance</th>
                   </tr>
-                ))}
-                <tr style={{ background: '#F8FAFC', fontWeight: 800, borderTop: '2px solid #0F172A' }}>
-                  <td style={{ padding: '10px 8px' }}>TOTAL RECONCILED</td>
-                  <td style={{ padding: '10px 8px', textAlign: 'right', color: '#D97706' }}>
-                    {formatINR(budgetReport.totalBudget)}
-                  </td>
-                  <td style={{ padding: '10px 8px', textAlign: 'right' }}>100%</td>
-                  <td style={{ padding: '10px 8px', color: '#16A34A' }}>Feasibility: {budgetReport.isFeasible ? 'Pass' : 'Deficit'}</td>
-                </tr>
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {budgetReport.categories.map((c) => (
+                    <tr key={c.id} style={{ borderBottom: '1px solid #E2E8F0' }}>
+                      <td style={{ padding: '8px', fontWeight: 600, color: '#1E293B' }}>{c.name}</td>
+                      <td style={{ padding: '8px', textAlign: 'right', fontWeight: 700, color: '#0F172A' }}>
+                        {formatINR(c.allocatedAmount)}
+                      </td>
+                      <td style={{ padding: '8px', textAlign: 'right', color: '#475569' }}>{c.percentage}%</td>
+                      <td style={{ padding: '8px', color: '#64748B', textTransform: 'capitalize' }}>{c.provenance}</td>
+                    </tr>
+                  ))}
+                  <tr style={{ background: '#F8FAFC', fontWeight: 800, borderTop: '2px solid #0F172A' }}>
+                    <td style={{ padding: '10px 8px' }}>TOTAL RECONCILED</td>
+                    <td style={{ padding: '10px 8px', textAlign: 'right', color: '#D97706' }}>
+                      {formatINR(budgetReport.totalBudget)}
+                    </td>
+                    <td style={{ padding: '10px 8px', textAlign: 'right' }}>100%</td>
+                    <td style={{ padding: '10px 8px', color: '#16A34A' }}>Feasibility: {budgetReport.isFeasible ? 'Pass' : 'Deficit'}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* Milestone Action Steps */}

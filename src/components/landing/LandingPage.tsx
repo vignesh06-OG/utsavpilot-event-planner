@@ -58,7 +58,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   const [demoScenario, setDemoScenario] = useState<'base' | 'adapted'>('base');
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', overflowX: 'hidden', width: '100%' }}>
       {/* HERO SECTION */}
       <section
         style={{
@@ -74,9 +74,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           style={{
             position: 'absolute',
             top: '-10%',
-            right: '-5%',
-            width: '600px',
-            height: '600px',
+            right: 0,
+            width: 'min(600px, 90vw)',
+            height: 'min(600px, 90vw)',
             borderRadius: '50%',
             background: 'radial-gradient(circle, rgba(231, 168, 62, 0.12) 0%, transparent 70%)',
             pointerEvents: 'none',
@@ -377,12 +377,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* Toggle Switch */}
             <div
               style={{
-                display: 'inline-flex',
+                display: 'flex',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
                 background: 'var(--bg-card-muted)',
                 padding: '4px',
-                borderRadius: 'var(--radius-full)',
+                borderRadius: 'var(--radius-lg)',
                 border: '1px solid var(--border-medium)',
                 marginTop: 'var(--space-4)',
+                maxWidth: '520px',
+                margin: 'var(--space-4) auto 0',
+                gap: '4px',
               }}
               role="group"
               aria-label="Demonstration scenario switcher"
@@ -390,7 +395,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <motion.button
                 type="button"
                 className={`btn btn-sm ${demoScenario === 'base' ? 'btn-aubergine' : 'btn-ghost'}`}
-                style={{ borderRadius: 'var(--radius-full)', padding: '6px 16px' }}
+                style={{ borderRadius: 'var(--radius-md)', padding: '8px 14px', flex: '1 1 200px', whiteSpace: 'normal', textAlign: 'center' }}
                 onClick={() => setDemoScenario('base')}
                 whileTap={{ scale: 0.97 }}
               >
@@ -399,7 +404,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               <motion.button
                 type="button"
                 className={`btn btn-sm ${demoScenario === 'adapted' ? 'btn-primary' : 'btn-ghost'}`}
-                style={{ borderRadius: 'var(--radius-full)', padding: '6px 16px' }}
+                style={{ borderRadius: 'var(--radius-md)', padding: '8px 14px', flex: '1 1 200px', whiteSpace: 'normal', textAlign: 'center' }}
                 onClick={() => setDemoScenario('adapted')}
                 whileTap={{ scale: 0.97 }}
               >
@@ -418,7 +423,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             style={{
               maxWidth: '960px',
               margin: '0 auto',
-              padding: 'var(--space-8)',
               border: demoScenario === 'adapted' ? '1.5px solid var(--color-vermilion)' : '1px solid var(--border-medium)',
               transition: 'border-color 0.3s ease',
             }}
@@ -887,6 +891,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       background: 'var(--bg-canvas-subtle)',
+                      flexWrap: 'wrap',
+                      gap: '6px',
                     }}
                   >
                     <div style={{ fontWeight: 800, color: 'var(--color-vermilion)', fontSize: '1.05rem' }}>
@@ -943,6 +949,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <motion.button
             type="button"
             className="btn btn-gold btn-lg pulse-glow"
+            style={{ maxWidth: '100%', whiteSpace: 'normal', padding: '0.8rem 1.4rem' }}
             onClick={onStartPlanning}
             aria-label="Launch celebration wizard"
             whileHover={{ scale: 1.04 }}

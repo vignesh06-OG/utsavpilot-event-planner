@@ -108,7 +108,7 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
                   flexWrap: 'wrap',
                 }}
               >
-                <div>
+                <div style={{ flex: '1 1 200px', minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                     <span style={{ fontWeight: 700, fontSize: '0.975rem' }}>{v.serviceTitle}</span>
                     <span className="badge badge-info" style={{ fontSize: '0.7rem' }}>
@@ -119,7 +119,7 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', fontSize: '0.8rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginTop: '4px', fontSize: '0.8rem', flexWrap: 'wrap' }}>
                     <span style={{ color: 'var(--text-muted)' }}>
                       Benchmark Range: <strong style={{ color: 'var(--color-gold-light)' }}>{v.benchmarkCostRange}</strong>
                     </span>
@@ -130,7 +130,7 @@ export const VendorBoard: React.FC<VendorBoardProps> = ({
                 </div>
 
                 {/* Status Selector & Expand button */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   <label htmlFor={`vendor-status-${v.id}`} className="sr-only">
                     Change status for {v.serviceTitle}
                   </label>

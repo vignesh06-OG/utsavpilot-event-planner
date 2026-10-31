@@ -224,19 +224,21 @@ export function App() {
             exit="exit"
             style={{
               position: 'fixed',
-              bottom: '24px',
-              right: '24px',
+              bottom: '16px',
+              right: '16px',
+              maxWidth: 'calc(100vw - 32px)',
               zIndex: 90,
               background: 'var(--bg-card)',
               border: '1.5px solid var(--color-vermilion)',
               boxShadow: 'var(--shadow-xl)',
-              padding: '12px 20px',
+              padding: '12px 18px',
               borderRadius: 'var(--radius-md)',
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
               color: 'var(--text-primary)',
-              fontSize: '0.9rem',
+              fontSize: '0.875rem',
+              wordBreak: 'break-word',
             }}
           >
             <Sparkles size={16} style={{ color: 'var(--color-vermilion)' }} />
@@ -257,7 +259,7 @@ export function App() {
               animate="animate"
               exit="exit"
               className="container"
-              style={{ padding: 'var(--space-8) var(--space-4)' }}
+              style={{ padding: 'clamp(1rem, 2.5vw, 2rem) 0' }}
             >
               <EventWizard
                 initialValues={currentPlan?.isDemoSample ? undefined : currentPlan?.input}
@@ -289,7 +291,7 @@ export function App() {
               animate="animate"
               exit="exit"
               className="container"
-              style={{ padding: 'var(--space-8) var(--space-4)' }}
+              style={{ padding: 'clamp(1rem, 2.5vw, 2rem) 0' }}
             >
               {/* Executive Summary Hero Banner */}
               <ExecutiveSummary
@@ -305,6 +307,7 @@ export function App() {
                   borderBottom: '1px solid var(--border-subtle)',
                   marginBottom: 'var(--space-6)',
                   overflowX: 'auto',
+                  WebkitOverflowScrolling: 'touch',
                   paddingBottom: '8px',
                   position: 'relative',
                 }}

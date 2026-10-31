@@ -1,6 +1,6 @@
-import React from 'react';
-import { motion } from 'motion/react';
-import { Sparkles, Calendar, Printer, ShieldCheck, Cpu, LayoutDashboard, Compass } from 'lucide-react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Sparkles, Calendar, Printer, ShieldCheck, Cpu, LayoutDashboard, Compass, Menu, X } from 'lucide-react';
 import { SAMPLE_DEMO_EVENTS } from '../../domain/eventDefaults';
 import type { EventInput } from '../../domain/types';
 
@@ -21,6 +21,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   onPrint,
   modelUsed,
 }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleMobileNav = (action: () => void) => {
+    setIsMobileMenuOpen(false);
+    action();
+  };
+
   return (
     <motion.header
       className="navbar"
@@ -44,20 +51,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           whileTap={{ scale: 0.99 }}
         >
           <div className="brand-logo-icon" aria-hidden="true">
-            <Sparkles size={22} />
+            <Sparkles size={20} />
           </div>
           <div>
-            <div className="brand-title">
-              UtsavPilot <span style={{ fontSize: '0.85rem', color: 'var(--color-vermilion)' }}>✦</span>
+            <div className="brand-title" style={{ fontSize: '1.2rem', lineHeight: 1.2 }}>
+              UtsavPilot <span style={{ fontSize: '0.8rem', color: 'var(--color-vermilion)' }}>✦</span>
             </div>
-            <div className="brand-tagline">Celebration Editorial & Budget Precision</div>
+            <div className="brand-tagline desktop-nav-only" style={{ fontSize: '0.65rem' }}>
+              Celebration Editorial & Budget Precision
+            </div>
           </div>
         </motion.div>
 
-        {/* Center Nav Switcher: Editorial vs Workspace */}
+        {/* Center Nav Switcher: Editorial vs Workspace (Desktop only) */}
         <nav
+          className="desktop-nav-only"
           style={{
-            display: 'flex',
             alignItems: 'center',
             background: 'var(--bg-canvas-subtle)',
             padding: '3px',
@@ -135,8 +144,8 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </nav>
 
-        {/* Right Action Tools */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
+        {/* Right Action Tools (Desktop only) */}
+        <div className="desktop-nav-only" style={{ alignItems: 'center', gap: 'var(--space-2)', flexWrap: 'wrap' }}>
           {/* Engine Status Badge */}
           <div
             className={`badge ${modelUsed === 'gemini-flash' ? 'badge-primary' : 'badge-gold'}`}
@@ -213,7 +222,130 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span>Plan Celebration</span>
           </motion.button>
         </div>
+
+        {/* Mobile Hamburger Toggle Button */}
+        <button
+          type="button"
+          className="mobile-nav-toggle"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={isMobileMenuOpen}
+        >
+          {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
       </div>
+
+      {/* Accessible Mobile Menu Drawer */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            className="mobile-nav-drawer"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Nav Switcher */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <button
+                type="button"
+                className={`btn btn-sm ${currentView === 'landing' ? 'btn-aubergine' : 'btn-secondary'}`}
+                style={{ width: '100%', justifyContent: 'center' }}
+                onClick={() => handleMobileNav(() => onNavigate('landing'))}
+              >
+                <Compass size={15} />
+                <span>Overview</span>
+              </button>
+              <button
+                type="button"
+                className={`btn btn-sm ${currentView === 'workspace' ? 'btn-aubergine' : 'btn-secondary'}`}
+                style={{ width: '100%', justifyContent: 'center' }}
+                onClick={() => handleMobileNav(() => onNavigate('workspace'))}
+              >
+                <LayoutDashboard size={15} />
+                <span>Workspace</span>
+              </button>
+            </div>
+
+            {/* Plan Celebration CTA */}
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={{ width: '100%', justifyContent: 'center', padding: '0.75rem 1rem' }}
+              onClick={() => handleMobileNav(onNewPlan)}
+            >
+              <Calendar size={18} />
+              <span>Plan New Celebration</span>
+            </button>
+
+            {/* Print Dossier CTA */}
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ width: '100%', justifyContent: 'center', padding: '0.65rem 1rem' }}
+              onClick={() => handleMobileNav(onPrint)}
+            >
+              <Printer size={16} />
+              <span>Print / PDF Dossier</span>
+            </button>
+
+            {/* Sample Plans Selector */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <label htmlFor="mobile-preset-select" style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                ✦ Load Sample Celebration:
+              </label>
+              <select
+                id="mobile-preset-select"
+                className="form-select"
+                style={{
+                  width: '100%',
+                  padding: '0.55rem 0.85rem',
+                  fontSize: '0.85rem',
+                  background: 'var(--bg-canvas-subtle)',
+                }}
+                defaultValue=""
+                onChange={(e) => {
+                  const idx = parseInt(e.target.value, 10);
+                  if (!isNaN(idx) && SAMPLE_DEMO_EVENTS[idx]) {
+                    handleMobileNav(() => onLoadPreset(SAMPLE_DEMO_EVENTS[idx]));
+                  }
+                }}
+              >
+                <option value="" disabled>
+                  Choose a pre-calibrated sample...
+                </option>
+                {SAMPLE_DEMO_EVENTS.map((demo, idx) => (
+                  <option key={idx} value={idx}>
+                    {demo.title.split(':')[0]} ({demo.city.split(',')[0]})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Engine Status Badge */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '8px 12px',
+                background: 'var(--bg-canvas-subtle)',
+                borderRadius: 'var(--radius-md)',
+                fontSize: '0.75rem',
+              }}
+            >
+              <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Engine Mode</span>
+              <div
+                className={`badge ${modelUsed === 'gemini-flash' ? 'badge-primary' : 'badge-gold'}`}
+                style={{ fontSize: '0.725rem' }}
+              >
+                {modelUsed === 'gemini-flash' ? <Cpu size={12} /> : <ShieldCheck size={12} />}
+                <span>{modelUsed === 'gemini-flash' ? 'Gemini Flash' : 'Deterministic Offline Engine'}</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.header>
   );
 };

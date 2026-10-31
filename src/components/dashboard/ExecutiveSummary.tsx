@@ -62,7 +62,7 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
         marginBottom: 'var(--space-6)',
         border: '1.5px solid var(--border-gold)',
         background: 'var(--bg-card)',
-        padding: 'var(--space-8)',
+        padding: 'clamp(1rem, 3vw, 2rem)',
       }}
     >
       {/* Editorial Decorative Background Watermark */}
@@ -125,8 +125,8 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
             flexWrap: 'wrap',
           }}
         >
-          <div style={{ maxWidth: '820px' }}>
-            <h1 style={{ marginBottom: 'var(--space-2)', color: 'var(--text-primary)' }}>
+          <div style={{ maxWidth: '820px', minWidth: 0, width: '100%', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
+            <h1 style={{ marginBottom: 'var(--space-2)', color: 'var(--text-primary)', wordBreak: 'break-word', overflowWrap: 'anywhere' }}>
               {input.title}
             </h1>
             <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>

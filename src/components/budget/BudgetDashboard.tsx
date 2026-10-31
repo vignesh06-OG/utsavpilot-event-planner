@@ -218,7 +218,7 @@ export const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
                     {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                   </button>
                   <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <span style={{ fontWeight: 700, fontSize: '0.975rem' }}>{cat.name}</span>
                       <span
                         className={`badge ${
@@ -242,7 +242,7 @@ export const BudgetDashboard: React.FC<BudgetDashboardProps> = ({
                 </div>
 
                 {/* Amount and percentage */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
                   {isEditing ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                       <input

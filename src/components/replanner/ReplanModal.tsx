@@ -155,7 +155,7 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
               value={budget}
               onChange={(e) => setBudget(Math.max(10000, Number(e.target.value)))}
             />
-            <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+            <div style={{ display: 'flex', gap: '6px', marginTop: '4px', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 className="btn btn-ghost btn-sm"
@@ -203,7 +203,7 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
               value={guestCount}
               onChange={(e) => setGuestCount(Math.max(5, Number(e.target.value)))}
             />
-            <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+            <div style={{ display: 'flex', gap: '6px', marginTop: '4px', flexWrap: 'wrap' }}>
               <button
                 type="button"
                 className="btn btn-ghost btn-sm"
@@ -298,8 +298,8 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
           </div>
 
           {/* Category Diff Mini-Table */}
-          <div style={{ marginTop: 'var(--space-4)', maxHeight: '160px', overflowY: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
+          <div style={{ marginTop: 'var(--space-4)', maxHeight: '180px', overflowY: 'auto', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            <table style={{ width: '100%', minWidth: '320px', borderCollapse: 'collapse', fontSize: '0.8rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}>
                   <th style={{ textAlign: 'left', padding: '4px' }}>Category</th>
@@ -341,7 +341,7 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
         </div>
 
         {/* Modal Actions */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
           <motion.button
             type="button"
             className="btn btn-ghost"
@@ -353,7 +353,7 @@ export const ReplanModal: React.FC<ReplanModalProps> = ({
           </motion.button>
           <motion.button
             type="button"
-            className="btn btn-vermilion"
+            className="btn btn-primary"
             onClick={handleApply}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}

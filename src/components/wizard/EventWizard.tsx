@@ -121,7 +121,8 @@ export const EventWizard: React.FC<EventWizardProps> = ({
     return Object.keys(errs).length === 0;
   };
 
-  const handleNext = () => {
+  const handleNext = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     if (step === 1 && validateStep1()) setStep(2);
     else if (step === 2 && validateStep2()) setStep(3);
   };
@@ -165,9 +166,9 @@ export const EventWizard: React.FC<EventWizardProps> = ({
         {/* Step tabs */}
         <div style={{ display: 'flex', gap: 'var(--space-2)' }}>
           {[
-            { s: 1, label: '1. Basics & Date' },
-            { s: 2, label: '2. Scale & Budget' },
-            { s: 3, label: '3. Nuances & Review' },
+            { s: 1, label: '1. Basics & Date', short: '1. Basics' },
+            { s: 2, label: '2. Scale & Budget', short: '2. Budget' },
+            { s: 3, label: '3. Nuances & Review', short: '3. Review' },
           ].map((st) => (
             <div
               key={st.s}
@@ -176,19 +177,23 @@ export const EventWizard: React.FC<EventWizardProps> = ({
               }}
               style={{
                 flex: 1,
-                padding: '10px 14px',
+                padding: '8px 6px',
                 borderRadius: 'var(--radius-md)',
                 background: step === st.s ? 'rgba(232, 93, 63, 0.12)' : 'var(--bg-input)',
                 border: `1px solid ${step === st.s ? 'var(--color-vermilion)' : 'var(--border-subtle)'}`,
                 color: step === st.s ? 'var(--color-aubergine)' : 'var(--text-muted)',
-                fontSize: '0.85rem',
+                fontSize: '0.8rem',
                 fontWeight: step === st.s ? 700 : 500,
                 textAlign: 'center',
                 cursor: st.s < step ? 'pointer' : 'default',
                 transition: 'all var(--transition-fast)',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
               }}
+              title={st.label}
             >
-              {st.label}
+              <span>{st.short}</span>
             </div>
           ))}
         </div>
@@ -705,6 +710,8 @@ export const EventWizard: React.FC<EventWizardProps> = ({
           marginTop: 'var(--space-6)',
           paddingTop: 'var(--space-4)',
           borderTop: '1px solid var(--border-subtle)',
+          flexWrap: 'wrap',
+          gap: '12px',
         }}
       >
         <div>
@@ -743,6 +750,7 @@ export const EventWizard: React.FC<EventWizardProps> = ({
               className="btn btn-gold btn-lg pulse-glow"
               disabled={isLoading}
               aria-busy={isLoading}
+              style={{ maxWidth: '100%', whiteSpace: 'normal', padding: '0.8rem 1.4rem', textAlign: 'center' }}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >

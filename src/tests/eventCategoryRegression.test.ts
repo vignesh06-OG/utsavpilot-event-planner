@@ -173,3 +173,4 @@ describe('Event Category & Title Contextual Regression Suite', () => {
     });
   });
 });
+
