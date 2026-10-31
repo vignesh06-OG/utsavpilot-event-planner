@@ -428,6 +428,31 @@ p {
   border-width: 0;
 }
 
+/* Hero Image Showcase Grid & Visual Image Cards */
+.hero-image-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+@media (min-width: 860px) {
+  .hero-image-grid {
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .hero-img-left {
+    grid-column: span 7;
+  }
+  .hero-img-right {
+    grid-column: span 5;
+  }
+}
+
+.celebration-image-container:hover img {
+  transform: scale(1.025);
+}
+
+
 /* Reduced Motion Alternative (Accessibility Requirement) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import type { EventPlan } from '../../domain/types';
 import { formatINR, formatLakhCrore } from '../../engine/budgetEngine';
+import { getAssetUrl } from '../../utils/assetHelper';
 import { staggerContainerVariants, staggerItemVariants } from '../../motion/motionTokens';
 
 interface ExecutiveSummaryProps {
@@ -52,7 +53,7 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
           right: 0,
           bottom: 0,
           width: '45%',
-          backgroundImage: 'url(/editorial_mandap.jpg)',
+          backgroundImage: `url(${getAssetUrl('editorial_mandap.webp')})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.12,

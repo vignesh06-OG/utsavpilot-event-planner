@@ -15,6 +15,7 @@ import {
 import type { EventInput, EventType, EventTier } from '../../domain/types';
 import { MINIMUM_PER_GUEST_BENCHMARKS } from '../../domain/eventDefaults';
 import { formatINR } from '../../engine/budgetEngine';
+import { CelebrationImage } from '../common/CelebrationImage';
 import { tabContentVariants } from '../../motion/motionTokens';
 
 interface EventWizardProps {
@@ -24,13 +25,43 @@ interface EventWizardProps {
   isLoading: boolean;
 }
 
-const EVENT_TYPE_LABELS: Record<EventType, { label: string; icon: string; desc: string }> = {
-  wedding: { label: 'Wedding & Sangeet', icon: '💍', desc: 'Baraat, Mandap, Sangeet & Hospitality' },
-  birthday: { label: 'Birthday Milestone', icon: '🎂', desc: 'Theme cake, party games & favors' },
-  puja: { label: 'Puja & Family Bhojan', icon: '🪔', desc: 'Satyanarayan, Griha Pravesh & Prasad' },
-  college_fest: { label: 'College Fest / Gala', icon: '🎸', desc: 'Concert, stage, sound & crowd control' },
-  community_event: { label: 'Community / Festival', icon: '🎪', desc: 'Society celebrations, Garba & Pandal' },
-  corporate_celebration: { label: 'Corporate Celebration', icon: '🏆', desc: 'Annual day, gala dinner & awards' },
+const EVENT_TYPE_LABELS: Record<EventType, { label: string; icon: string; desc: string; image: string }> = {
+  wedding: { 
+    label: 'Wedding & Sangeet', 
+    icon: '💍', 
+    desc: 'Baraat, Mandap, Sangeet & Hospitality',
+    image: 'editorial_mandap.webp'
+  },
+  birthday: { 
+    label: 'Birthday Milestone', 
+    icon: '🎂', 
+    desc: 'Theme cake, party games & favors',
+    image: 'birthday_celebration.webp'
+  },
+  puja: { 
+    label: 'Puja & Family Bhojan', 
+    icon: '🪔', 
+    desc: 'Satyanarayan, Griha Pravesh & Prasad',
+    image: 'traditional_puja.webp'
+  },
+  college_fest: { 
+    label: 'College Fest / Gala', 
+    icon: '🎸', 
+    desc: 'Concert, stage, sound & crowd control',
+    image: 'college_fest.webp'
+  },
+  community_event: { 
+    label: 'Community / Festival', 
+    icon: '🎪', 
+    desc: 'Society celebrations, Garba & Pandal',
+    image: 'luxury_venue.webp'
+  },
+  corporate_celebration: { 
+    label: 'Corporate Celebration', 
+    icon: '🏆', 
+    desc: 'Annual day, gala dinner & awards',
+    image: 'editorial_dining.webp'
+  },
 };
 
 const TIER_DESCRIPTIONS: Record<EventTier, { title: string; desc: string }> = {
@@ -209,17 +240,64 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                       }}
                       className={`card card-interactive ${isSelected ? 'card-elevated' : ''}`}
                       style={{
-                        padding: 'var(--space-3)',
+                        padding: 0,
+                        overflow: 'hidden',
                         borderColor: isSelected ? 'var(--color-vermilion)' : 'var(--border-subtle)',
                         background: isSelected ? 'rgba(232, 93, 63, 0.08)' : 'var(--bg-card)',
-                        boxShadow: isSelected ? 'var(--shadow-glow-primary)' : 'none',
+                        boxShadow: isSelected ? '0 0 0 2px var(--color-vermilion), var(--shadow-md)' : 'none',
+                        transition: 'all var(--transition-fast)',
                       }}
                     >
-                      <div style={{ fontSize: '1.5rem', marginBottom: '4px' }}>{meta.icon}</div>
-                      <div style={{ fontWeight: 700, fontSize: '0.95rem', color: isSelected ? 'var(--color-vermilion)' : 'var(--text-primary)' }}>
-                        {meta.label}
+                      <div style={{ position: 'relative' }}>
+                        <CelebrationImage
+                          src={meta.image}
+                          alt={meta.label}
+                          aspectRatio="16/9"
+                          borderRadius="0"
+                          overlay={
+                            <div
+                              style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: isSelected 
+                                  ? 'linear-gradient(to top, rgba(40, 21, 47, 0.88) 0%, rgba(232, 93, 63, 0.35) 100%)'
+                                  : 'linear-gradient(to top, rgba(40, 21, 47, 0.78) 0%, rgba(40, 21, 47, 0.2) 100%)',
+                                display: 'flex',
+                                alignItems: 'flex-start',
+                                justifyContent: 'space-between',
+                                padding: '8px 10px',
+                              }}
+                            >
+                              <span style={{ fontSize: '1.25rem', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }}>{meta.icon}</span>
+                              {isSelected && (
+                                <span
+                                  style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    borderRadius: '50%',
+                                    backgroundColor: 'var(--color-vermilion)',
+                                    color: '#fff',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    boxShadow: '0 2px 4px rgba(0,0,0,0.4)',
+                                  }}
+                                >
+                                  <CheckCircle2 size={14} />
+                                </span>
+                              )}
+                            </div>
+                          }
+                        />
                       </div>
-                      <p style={{ fontSize: '0.775rem', marginTop: '2px' }}>{meta.desc}</p>
+                      <div style={{ padding: 'var(--space-3)' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.925rem', color: isSelected ? 'var(--color-vermilion)' : 'var(--text-primary)' }}>
+                          {meta.label}
+                        </div>
+                        <p style={{ fontSize: '0.75rem', marginTop: '3px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                          {meta.desc}
+                        </p>
+                      </div>
                     </div>
                   );
                 })}

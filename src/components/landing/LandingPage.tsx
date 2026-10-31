@@ -10,7 +10,32 @@ import {
   Calendar, 
   Building2 
 } from 'lucide-react';
+import { CelebrationImage } from '../common/CelebrationImage';
+import { getAssetUrl } from '../../utils/assetHelper';
 import { SAMPLE_DEMO_EVENTS } from '../../domain/eventDefaults';
+
+const PRESET_IMAGES: Record<string, { src: string; alt: string; tag: string }> = {
+  wedding: {
+    src: 'editorial_mandap.webp',
+    alt: 'Grand Indian wedding mandap with fresh marigold floral architecture',
+    tag: 'Heritage Vivah',
+  },
+  puja: {
+    src: 'traditional_puja.webp',
+    alt: 'Traditional Vedic puja with glowing brass diyas, sacred thali, and fresh marigold garlands',
+    tag: 'Sacred Ritual',
+  },
+  birthday: {
+    src: 'birthday_celebration.webp',
+    alt: 'Joyful Indian family milestone birthday in garden venue with fairy lights and mithai',
+    tag: 'Family Milestone',
+  },
+  college_fest: {
+    src: 'college_fest.webp',
+    alt: 'Vibrant college cultural fest concert stage with architectural lighting and crowd',
+    tag: 'Youth Festival',
+  },
+};
 import type { EventInput } from '../../domain/types';
 import { formatINR } from '../../engine/budgetEngine';
 import { 
@@ -161,90 +186,96 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               margin: '0 auto',
             }}
           >
-            {/* Main Stage Grid */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(12, 1fr)',
-                gap: 'var(--space-4)',
-                alignItems: 'center',
-              }}
-            >
+            {/* Main Stage Grid with Responsive Breakpoints */}
+            <div className="hero-image-grid">
               {/* Left Image: Editorial Mandap */}
               <div
+                className="hero-img-left"
                 style={{
-                  gridColumn: 'span 7',
                   borderRadius: 'var(--radius-xl)',
                   overflow: 'hidden',
                   boxShadow: 'var(--shadow-xl)',
-                  border: '1px solid var(--border-medium)',
+                  border: '1.5px solid var(--border-medium)',
                   position: 'relative',
-                  aspectRatio: '16/10',
                 }}
               >
-                <img
-                  src="/editorial_mandap.jpg"
+                <CelebrationImage
+                  src="editorial_mandap.webp"
+                  webpSrc="editorial_mandap.webp"
                   alt="Vogue style Indian wedding mandap with fresh marigold floral architecture"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  aspectRatio="16/10"
+                  priority={true}
+                  fallbackTitle="The Sharma & Verma Sangeet & Vivah"
+                  overlay={
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(to top, rgba(40, 21, 47, 0.82) 0%, rgba(40, 21, 47, 0.2) 55%, transparent 100%)',
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        padding: 'var(--space-6)',
+                      }}
+                    >
+                      <div style={{ color: '#FFFFFF' }}>
+                        <span className="badge badge-gold" style={{ marginBottom: '6px' }}>
+                          Heritage Wedding Direction
+                        </span>
+                        <h3 style={{ color: '#FFFFFF', fontSize: '1.35rem', margin: 0, textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+                          The Sharma & Verma Sangeet & Vivah
+                        </h3>
+                        <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.85rem', margin: '4px 0 0' }}>
+                          Jaipur, Rajasthan • 300 Guests • ₹35,00,000 Budget
+                        </p>
+                      </div>
+                    </div>
+                  }
                 />
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to top, rgba(40, 21, 47, 0.7) 0%, transparent 60%)',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    padding: 'var(--space-6)',
-                  }}
-                >
-                  <div style={{ color: '#FFFFFF' }}>
-                    <span className="badge badge-gold" style={{ marginBottom: '6px' }}>
-                      Heritage Wedding Direction
-                    </span>
-                    <h3 style={{ color: '#FFFFFF', fontSize: '1.25rem', margin: 0 }}>
-                      The Sharma & Verma Sangeet & Vivah
-                    </h3>
-                    <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.85rem', margin: '4px 0 0' }}>
-                      Jaipur, Rajasthan • 300 Guests • ₹35,00,000 Budget
-                    </p>
-                  </div>
-                </div>
               </div>
 
               {/* Right Image: Royal Feast Dining */}
               <div
+                className="hero-img-right"
                 style={{
-                  gridColumn: 'span 5',
                   borderRadius: 'var(--radius-xl)',
                   overflow: 'hidden',
                   boxShadow: 'var(--shadow-xl)',
-                  border: '1px solid var(--border-medium)',
+                  border: '1.5px solid var(--border-medium)',
                   position: 'relative',
-                  aspectRatio: '16/12',
                 }}
               >
-                <img
-                  src="/editorial_dining.jpg"
+                <CelebrationImage
+                  src="editorial_dining.webp"
+                  webpSrc="editorial_dining.webp"
                   alt="Royal banquet table setting with brass thalis and marigold runner"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-                <div
-                  style={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: 'linear-gradient(to top, rgba(40, 21, 47, 0.6) 0%, transparent 50%)',
-                    display: 'flex',
-                    alignItems: 'flex-end',
-                    padding: 'var(--space-4)',
-                  }}
-                >
-                  <div style={{ color: '#FFFFFF' }}>
-                    <div style={{ fontWeight: 700, fontSize: '0.95rem' }}>Culinary Excellence</div>
-                    <div style={{ fontSize: '0.775rem', color: 'rgba(255,255,255,0.85)' }}>
-                      Satvik & Royal Rajasthani Live Counters
+                  aspectRatio="16/12"
+                  priority={true}
+                  fallbackTitle="Culinary Excellence"
+                  overlay={
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(to top, rgba(40, 21, 47, 0.78) 0%, rgba(40, 21, 47, 0.15) 50%, transparent 100%)',
+                        display: 'flex',
+                        alignItems: 'flex-end',
+                        padding: 'var(--space-5)',
+                      }}
+                    >
+                      <div style={{ color: '#FFFFFF' }}>
+                        <span className="badge badge-primary" style={{ marginBottom: '6px', fontSize: '0.725rem' }}>
+                          Bespoke Catering
+                        </span>
+                        <div style={{ fontWeight: 700, fontSize: '1.05rem', textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+                          Culinary Excellence
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.9)' }}>
+                          Satvik & Royal Rajasthani Live Counters
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  }
+                />
               </div>
             </div>
 
@@ -768,63 +799,106 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             variants={staggerContainerVariants}
             className="grid-4"
           >
-            {SAMPLE_DEMO_EVENTS.map((preset, idx) => (
-              <motion.div
-                key={idx}
-                tabIndex={0}
-                role="button"
-                onClick={() => onLoadPreset(preset)}
-                onKeyDown={(e) => {
-                  if (e.key === ' ' || e.key === 'Enter') onLoadPreset(preset);
-                }}
-                className="card card-interactive"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  background: 'var(--bg-card)',
-                }}
-                variants={staggerItemVariants}
-                whileHover={{ y: -6, boxShadow: 'var(--shadow-xl)', transition: { duration: 0.2 } }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <span className="badge badge-gold" style={{ fontSize: '0.7rem' }}>
-                      {preset.eventType.replace('_', ' ').toUpperCase()}
-                    </span>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                      {preset.durationDays} {preset.durationDays === 1 ? 'Day' : 'Days'}
-                    </span>
-                  </div>
-
-                  <h4 style={{ fontSize: '1.05rem', color: 'var(--text-primary)', marginBottom: '6px' }}>
-                    {preset.title}
-                  </h4>
-
-                  <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: 'var(--space-4)' }}>
-                    {preset.city} • {preset.guestCount} Guests
-                  </p>
-                </div>
-
-                <div
-                  style={{
-                    borderTop: '1px solid var(--border-subtle)',
-                    paddingTop: 'var(--space-3)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
+            {SAMPLE_DEMO_EVENTS.map((preset, idx) => {
+              const imgMeta = PRESET_IMAGES[preset.eventType] || PRESET_IMAGES.wedding;
+              return (
+                <motion.div
+                  key={idx}
+                  tabIndex={0}
+                  role="button"
+                  onClick={() => onLoadPreset(preset)}
+                  onKeyDown={(e) => {
+                    if (e.key === ' ' || e.key === 'Enter') onLoadPreset(preset);
                   }}
+                  className="card card-interactive"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    background: 'var(--bg-card)',
+                    overflow: 'hidden',
+                    padding: 0,
+                  }}
+                  variants={staggerItemVariants}
+                  whileHover={{ y: -6, boxShadow: 'var(--shadow-xl)', transition: { duration: 0.2 } }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <div style={{ fontWeight: 800, color: 'var(--color-vermilion)', fontSize: '1.05rem' }}>
-                    {formatINR(preset.totalBudget)}
+                  <div>
+                    {/* Visual Celebration Thumbnail */}
+                    <CelebrationImage
+                      src={imgMeta.src}
+                      alt={imgMeta.alt}
+                      aspectRatio="16/10"
+                      borderRadius="0"
+                      overlay={
+                        <div
+                          style={{
+                            position: 'absolute',
+                            inset: 0,
+                            background: 'linear-gradient(to top, rgba(40, 21, 47, 0.75) 0%, transparent 60%)',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'space-between',
+                            padding: '10px 12px',
+                          }}
+                        >
+                          <span
+                            className="badge badge-gold"
+                            style={{
+                              fontSize: '0.675rem',
+                              backdropFilter: 'blur(4px)',
+                              background: 'rgba(24, 18, 30, 0.8)',
+                              color: '#FAF5EE',
+                              border: '1px solid rgba(231, 168, 62, 0.5)',
+                            }}
+                          >
+                            {imgMeta.tag}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: '0.725rem',
+                              color: '#FAF5EE',
+                              fontWeight: 600,
+                              textShadow: '0 1px 4px rgba(0,0,0,0.6)',
+                            }}
+                          >
+                            {preset.durationDays} {preset.durationDays === 1 ? 'Day' : 'Days'}
+                          </span>
+                        </div>
+                      }
+                    />
+
+                    <div style={{ padding: 'var(--space-4)' }}>
+                      <h4 style={{ fontSize: '1.025rem', color: 'var(--text-primary)', marginBottom: '4px', lineHeight: 1.3 }}>
+                        {preset.title}
+                      </h4>
+
+                      <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>
+                        {preset.city} • {preset.guestCount} Guests
+                      </p>
+                    </div>
                   </div>
-                  <span className="btn btn-ghost btn-sm" style={{ padding: '4px 8px', fontSize: '0.75rem' }}>
-                    Open Plan →
-                  </span>
-                </div>
-              </motion.div>
-            ))}
+
+                  <div
+                    style={{
+                      borderTop: '1px solid var(--border-subtle)',
+                      padding: 'var(--space-3) var(--space-4)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      background: 'var(--bg-canvas-subtle)',
+                    }}
+                  >
+                    <div style={{ fontWeight: 800, color: 'var(--color-vermilion)', fontSize: '1.05rem' }}>
+                      {formatINR(preset.totalBudget)}
+                    </div>
+                    <span className="btn btn-ghost btn-sm" style={{ padding: '4px 8px', fontSize: '0.75rem' }}>
+                      Open Plan →
+                    </span>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
       </section>
@@ -832,19 +906,32 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* FINAL CALL TO ACTION */}
       <section
         style={{
+          position: 'relative',
           padding: 'var(--space-16) 0',
           background: 'linear-gradient(135deg, #28152F 0%, #3B1C46 100%)',
           color: 'var(--text-inverse)',
           textAlign: 'center',
+          overflow: 'hidden',
         }}
       >
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: `url(${getAssetUrl('luxury_venue.webp')})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.14,
+            pointerEvents: 'none',
+          }}
+        />
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.25 }}
           variants={fadeInUpVariants}
           className="container"
-          style={{ maxWidth: '780px' }}
+          style={{ maxWidth: '780px', position: 'relative', zIndex: 1 }}
         >
           <h2 style={{ color: '#FFFFFF', fontSize: 'clamp(2rem, 4vw, 3rem)', marginBottom: 'var(--space-4)' }}>
             Plan with Clarity. Celebrate with Joy.
