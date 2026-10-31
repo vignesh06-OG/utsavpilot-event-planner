@@ -242,4 +242,5 @@ def test_all_viewports(base_url):
     print("=======================================================")
 
 if __name__ == '__main__':
-    test_all_viewports("http://localhost:5173")
+    target = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:5173"
+    test_all_viewports(target)
