@@ -3,6 +3,8 @@ import { z } from 'zod';
 export const EventInputSchema = z.object({
   eventType: z.enum([
     'wedding',
+    'engagement',
+    'anniversary',
     'birthday',
     'puja',
     'college_fest',

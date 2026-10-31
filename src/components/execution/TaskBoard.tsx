@@ -178,7 +178,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
                   id="new-task-title"
                   type="text"
                   className="form-input"
-                  placeholder="e.g. Order 15 boxes of fresh Kaju Katli for Shagun"
+                  placeholder="e.g. Finalize sweet boxes, arrange transport, or confirm sound check"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   required

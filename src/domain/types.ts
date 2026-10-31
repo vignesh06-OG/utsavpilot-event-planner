@@ -1,9 +1,11 @@
 export type EventType = 
   | 'wedding' 
+  | 'engagement'
+  | 'anniversary'
   | 'birthday' 
   | 'puja' 
+  | 'community_event'
   | 'college_fest' 
-  | 'community_event' 
   | 'corporate_celebration';
 
 export type EventTier = 'budget' | 'standard' | 'premium' | 'luxury';

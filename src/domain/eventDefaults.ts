@@ -217,6 +217,90 @@ export const INDIAN_EVENT_ALLOCATION_PRESETS: Record<EventType, CategoryAllocati
       typicalItems: ['Last minute headcount billing buffer'],
     },
   ],
+
+  engagement: [
+    {
+      id: 'venue_hospitality',
+      name: 'Banquet Hall & Guest Hospitality',
+      defaultPercentage: 30,
+      typicalItems: ['Air-Conditioned Banquet Hall', 'Family Welcome Hospitality & Drinks', 'Changing Suite for Couple'],
+    },
+    {
+      id: 'catering_dining',
+      name: 'Catering & High Tea Counters',
+      defaultPercentage: 30,
+      typicalItems: ['Live Chaat & Starter Counters', 'Multi-Cuisine Dinner Buffet', 'Artisanal Mithai & Desserts'],
+    },
+    {
+      id: 'ring_stage_decor',
+      name: 'Ring Ceremony Stage & Floral Decor',
+      defaultPercentage: 16,
+      typicalItems: ['Pastel Floral Stage & Ring Backdrop', 'Entrance Arch & Welcome Standee', 'Designer Ring Tray & Lighting'],
+    },
+    {
+      id: 'photo_video',
+      name: 'Candid Photography & Ring Cinema',
+      defaultPercentage: 10,
+      typicalItems: ['Candid Couple Portraits', 'Family Group Coverage', 'Teaser Reel & Photo Album'],
+    },
+    {
+      id: 'music_entertainment',
+      name: 'Sound, DJ & Emcee',
+      defaultPercentage: 5,
+      typicalItems: ['Pro Sound System & Wireless Mics', 'DJ Music & Ring Exchange Theme Music'],
+    },
+    {
+      id: 'invites_favors',
+      name: 'Digital Invites & Gift Favors',
+      defaultPercentage: 4,
+      typicalItems: ['Animated Digital Video Invites', 'Boxed Sweets / Dry Fruit Return Favors'],
+    },
+    {
+      id: 'contingency',
+      name: 'Contingency Reserve',
+      defaultPercentage: 5,
+      typicalItems: ['Last-minute Guest Additions', 'Extra Counter Food Refills'],
+    },
+  ],
+
+  anniversary: [
+    {
+      id: 'venue_banquet',
+      name: 'Banquet Hall & Dining Ambiance',
+      defaultPercentage: 35,
+      typicalItems: ['Private Banquet Lawn / Hall', 'Air Conditioning & Power Backup', 'Reserved Family Seating'],
+    },
+    {
+      id: 'catering_dining',
+      name: 'Gourmet Multi-Course Feast',
+      defaultPercentage: 35,
+      typicalItems: ['Welcome Mocktails & Appetizers', 'Royal Dinner Spread', 'Custom Tiered Anniversary Cake'],
+    },
+    {
+      id: 'decor_lighting',
+      name: 'Floral Backdrop & Ambient Lighting',
+      defaultPercentage: 12,
+      typicalItems: ['Silver / Golden Jubilee Photo Backdrop', 'Candlelit Centerpieces', 'Fairy Light Ceiling Drapes'],
+    },
+    {
+      id: 'photo_memories',
+      name: 'Cinematography & Memory Montage',
+      defaultPercentage: 8,
+      typicalItems: ['Couple Milestone Portrait Session', 'Family Slideshow Projection', 'Celebration Video Highlights'],
+    },
+    {
+      id: 'cake_entertainment',
+      name: 'Music & Emcee Coordination',
+      defaultPercentage: 5,
+      typicalItems: ['Acoustic Singer or Retro DJ', 'Family Blessing Microphone Setup'],
+    },
+    {
+      id: 'contingency',
+      name: 'Contingency Reserve',
+      defaultPercentage: 5,
+      typicalItems: ['Extra Headcount Buffer', 'Special Diet Accommodations'],
+    },
+  ],
 };
 
 // Benchmark minimum realistic per-guest cost in INR (Tier 1 vs Tier 2)
@@ -226,6 +310,18 @@ export const MINIMUM_PER_GUEST_BENCHMARKS: Record<EventType, Record<EventTier, n
     standard: 1800,
     premium: 3500,
     luxury: 7500,
+  },
+  engagement: {
+    budget: 700,
+    standard: 1500,
+    premium: 2800,
+    luxury: 5500,
+  },
+  anniversary: {
+    budget: 800,
+    standard: 1600,
+    premium: 3000,
+    luxury: 6000,
   },
   birthday: {
     budget: 400,
@@ -256,6 +352,136 @@ export const MINIMUM_PER_GUEST_BENCHMARKS: Record<EventType, Record<EventTier, n
     standard: 1800,
     premium: 3200,
     luxury: 6000,
+  },
+};
+
+export interface EventCategoryConfig {
+  label: string;
+  icon: string;
+  desc: string;
+  image: string;
+  exampleTitle: string;
+  titlePlaceholder: string;
+  cityPlaceholder: string;
+  defaultGuestCount: number;
+  defaultBudget: number;
+  defaultDurationDays: number;
+  styleThemePlaceholder: string;
+  notesPlaceholder: string;
+}
+
+export const EVENT_CATEGORY_CONFIG: Record<EventType, EventCategoryConfig> = {
+  wedding: {
+    label: 'Wedding & Sangeet',
+    icon: '💍',
+    desc: 'Baraat, Mandap, Sangeet & Hospitality',
+    image: 'editorial_mandap.webp',
+    exampleTitle: 'Sharma & Verma Wedding',
+    titlePlaceholder: 'e.g. Sharma & Verma Wedding',
+    cityPlaceholder: 'e.g. Jaipur, Bengaluru, Delhi NCR, Udaipur',
+    defaultGuestCount: 250,
+    defaultBudget: 2500000,
+    defaultDurationDays: 2,
+    styleThemePlaceholder: 'e.g. Royal Marigold & Brass Heritage / Pastel Palace Elegance',
+    notesPlaceholder: 'Mention baraat timing, vidai requirements, or elderly family accommodation...',
+  },
+  engagement: {
+    label: 'Engagement & Roka',
+    icon: '💎',
+    desc: 'Ring ceremony, floral stage & family high tea',
+    image: 'editorial_mandap.webp',
+    exampleTitle: "Riya & Arjun's Engagement",
+    titlePlaceholder: "e.g. Riya & Arjun's Engagement",
+    cityPlaceholder: 'e.g. Delhi NCR, Mumbai, Chandigarh',
+    defaultGuestCount: 100,
+    defaultBudget: 600000,
+    defaultDurationDays: 1,
+    styleThemePlaceholder: 'e.g. Romantic Pastel Florals with Fairy Light Canopy',
+    notesPlaceholder: 'Ring exchange sequence timing, welcome high-tea counters, and family photo booth...',
+  },
+  anniversary: {
+    label: 'Anniversary Milestone',
+    icon: '🥂',
+    desc: 'Silver/Golden jubilee, couple toast & banquet',
+    image: 'editorial_dining.webp',
+    exampleTitle: "Aarav & Meera's Anniversary",
+    titlePlaceholder: "e.g. Aarav & Meera's Anniversary",
+    cityPlaceholder: 'e.g. Mumbai, Bengaluru, Pune',
+    defaultGuestCount: 80,
+    defaultBudget: 400000,
+    defaultDurationDays: 1,
+    styleThemePlaceholder: 'e.g. Silver & Ivory Jubilee Elegance with Candlelit Banquet',
+    notesPlaceholder: 'Couple memory video projection, vintage song playlist, and family blessing moments...',
+  },
+  birthday: {
+    label: 'Birthday Milestone',
+    icon: '🎂',
+    desc: 'Theme cake, party games & favors',
+    image: 'birthday_celebration.webp',
+    exampleTitle: "Lara's Birthday",
+    titlePlaceholder: "e.g. Lara's Birthday",
+    cityPlaceholder: 'e.g. Bengaluru, Mumbai, Hyderabad',
+    defaultGuestCount: 50,
+    defaultBudget: 150000,
+    defaultDurationDays: 1,
+    styleThemePlaceholder: 'e.g. Whimsical Pastel Carnival, Jungle Safari or Retro Glow',
+    notesPlaceholder: 'Kids entertainer magic show timing, cake-cutting hour, and return gift distribution...',
+  },
+  puja: {
+    label: 'Puja & Family Bhojan',
+    icon: '🪔',
+    desc: 'Satyanarayan, Griha Pravesh & Prasad',
+    image: 'traditional_puja.webp',
+    exampleTitle: 'Griha Pravesh & Satyanarayan Puja',
+    titlePlaceholder: 'e.g. Griha Pravesh & Satyanarayan Puja',
+    cityPlaceholder: 'e.g. Pune, Chennai, Varanasi, Bengaluru',
+    defaultGuestCount: 80,
+    defaultBudget: 250000,
+    defaultDurationDays: 1,
+    styleThemePlaceholder: 'e.g. Traditional Temple Marigold, Mango Leaves & Brass Kuthuvilakku',
+    notesPlaceholder: 'Auspicious muhurat timing, priest dakshina, and satvik banana leaf feast arrangements...',
+  },
+  community_event: {
+    label: 'Festival & Community',
+    icon: '🎪',
+    desc: 'Society celebrations, Garba & Pandal',
+    image: 'luxury_venue.webp',
+    exampleTitle: 'Ganesh Utsav Community Mahotsav',
+    titlePlaceholder: 'e.g. Ganesh Utsav Community Mahotsav',
+    cityPlaceholder: 'e.g. Ahmedabad, Mumbai, Kolkata, Indore',
+    defaultGuestCount: 300,
+    defaultBudget: 500000,
+    defaultDurationDays: 1,
+    styleThemePlaceholder: 'e.g. Vibrant Dandiya Festivity with Hanging Torans & Amber Lanterns',
+    notesPlaceholder: 'Society sound curfew permissions, prasadam counter queue, and eco-friendly cleanup...',
+  },
+  college_fest: {
+    label: 'College Fest / Gala',
+    icon: '🎸',
+    desc: 'Concert, stage, sound & crowd control',
+    image: 'college_fest.webp',
+    exampleTitle: 'Vibrance Annual Cultural Fest',
+    titlePlaceholder: 'e.g. Vibrance Annual Cultural Fest',
+    cityPlaceholder: 'e.g. Delhi NCR, Chandigarh, Bengaluru, Manipal',
+    defaultGuestCount: 500,
+    defaultBudget: 750000,
+    defaultDurationDays: 1,
+    styleThemePlaceholder: 'e.g. Neon Horizon Concert Stage with LED Moving Heads & Laser Truss',
+    notesPlaceholder: 'Campus security barricading, celebrity artist green room, and sound clearance permits...',
+  },
+  corporate_celebration: {
+    label: 'Corporate Celebration',
+    icon: '🏆',
+    desc: 'Annual day, gala dinner & awards',
+    image: 'editorial_dining.webp',
+    exampleTitle: 'Annual Leadership Summit & Gala',
+    titlePlaceholder: 'e.g. Annual Leadership Summit & Gala',
+    cityPlaceholder: 'e.g. Hyderabad, Gurugram, Bengaluru, Mumbai',
+    defaultGuestCount: 150,
+    defaultBudget: 1200000,
+    defaultDurationDays: 1,
+    styleThemePlaceholder: 'e.g. Modern Monochrome & Gold Executive Excellence',
+    notesPlaceholder: 'Keynote audio-visual LED wall, executive award mementos, and cocktail dinner buffet...',
   },
 };
 
@@ -323,5 +549,37 @@ export const SAMPLE_DEMO_EVENTS: EventInput[] = [
     priorities: ['Professional acoustic sound system & truss lighting', 'Strict bouncer security & crowd control'],
     styleTheme: 'Neon Retro-Futuristic with glow wristbands and laser stage projection',
     notes: 'Band performance starts at 5:00 PM followed by DJ night wrapping at 9:30 PM sharp.',
+  },
+  {
+    eventType: 'anniversary',
+    title: "Aarav & Meera's 25th Silver Jubilee Anniversary",
+    date: '2026-12-20',
+    durationDays: 1,
+    city: 'Mumbai, Maharashtra',
+    tier: 'premium',
+    guestCount: 80,
+    totalBudget: 400000,
+    currency: 'INR',
+    dietaryRequirements: ['Multi-Course North & South Indian Banquet', 'Signature Mocktail Bar'],
+    accessibilityNeeds: ['Ground floor banquet hall access', 'Priority front row seating for elders'],
+    priorities: ['Memorable family slideshow and speeches', 'Candid anniversary couple cinematography'],
+    styleTheme: 'Silver Jubilee & Ivory Floral Elegance with Warm Fairy Lights',
+    notes: 'Family toast and memory slideshow at 8:00 PM followed by royal dinner buffet.',
+  },
+  {
+    eventType: 'engagement',
+    title: "Riya & Arjun's Royal Engagement & Sagai",
+    date: '2026-11-20',
+    durationDays: 1,
+    city: 'Delhi NCR',
+    tier: 'standard',
+    guestCount: 120,
+    totalBudget: 600000,
+    currency: 'INR',
+    dietaryRequirements: ['Live Chaat Counter', 'Vegetarian High Tea & Multi-cuisine Buffet'],
+    accessibilityNeeds: ['Ramp to ring stage', 'Comfortable lounge seating'],
+    priorities: ['Romantic ring stage floral backdrop', 'Candid couple portraits and ring cinema'],
+    styleTheme: 'Pastel Peach, Rose Gold & Botanical Foliage Canopy',
+    notes: 'Ring exchange ceremony at 6:00 PM followed by family photo sessions and dinner.',
   },
 ];

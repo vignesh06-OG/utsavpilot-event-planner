@@ -13,7 +13,7 @@ import {
   Info
 } from 'lucide-react';
 import type { EventInput, EventType, EventTier } from '../../domain/types';
-import { MINIMUM_PER_GUEST_BENCHMARKS } from '../../domain/eventDefaults';
+import { MINIMUM_PER_GUEST_BENCHMARKS, EVENT_CATEGORY_CONFIG } from '../../domain/eventDefaults';
 import { formatINR } from '../../engine/budgetEngine';
 import { CelebrationImage } from '../common/CelebrationImage';
 import { tabContentVariants } from '../../motion/motionTokens';
@@ -24,45 +24,6 @@ interface EventWizardProps {
   onCancel?: () => void;
   isLoading: boolean;
 }
-
-const EVENT_TYPE_LABELS: Record<EventType, { label: string; icon: string; desc: string; image: string }> = {
-  wedding: { 
-    label: 'Wedding & Sangeet', 
-    icon: '💍', 
-    desc: 'Baraat, Mandap, Sangeet & Hospitality',
-    image: 'editorial_mandap.webp'
-  },
-  birthday: { 
-    label: 'Birthday Milestone', 
-    icon: '🎂', 
-    desc: 'Theme cake, party games & favors',
-    image: 'birthday_celebration.webp'
-  },
-  puja: { 
-    label: 'Puja & Family Bhojan', 
-    icon: '🪔', 
-    desc: 'Satyanarayan, Griha Pravesh & Prasad',
-    image: 'traditional_puja.webp'
-  },
-  college_fest: { 
-    label: 'College Fest / Gala', 
-    icon: '🎸', 
-    desc: 'Concert, stage, sound & crowd control',
-    image: 'college_fest.webp'
-  },
-  community_event: { 
-    label: 'Community / Festival', 
-    icon: '🎪', 
-    desc: 'Society celebrations, Garba & Pandal',
-    image: 'luxury_venue.webp'
-  },
-  corporate_celebration: { 
-    label: 'Corporate Celebration', 
-    icon: '🏆', 
-    desc: 'Annual day, gala dinner & awards',
-    image: 'editorial_dining.webp'
-  },
-};
 
 const TIER_DESCRIPTIONS: Record<EventTier, { title: string; desc: string }> = {
   budget: { title: 'Budget Conscious', desc: 'Practical community venues, core catering, smart essentials' },
@@ -80,7 +41,9 @@ export const EventWizard: React.FC<EventWizardProps> = ({
   const [step, setStep] = useState<1 | 2 | 3>(1);
 
   const [eventType, setEventType] = useState<EventType>(initialValues?.eventType || 'wedding');
-  const [title, setTitle] = useState<string>(initialValues?.title || 'Grand Family Vivah & Sangeet');
+  // Title starts empty for new plans so contextual placeholders and examples are clearly displayed
+  const [title, setTitle] = useState<string>(initialValues?.title || '');
+  const [hasUserEditedTitle, setHasUserEditedTitle] = useState<boolean>(Boolean(initialValues?.title));
   const [date, setDate] = useState<string>(() => initialValues?.date || '2026-11-28');
   const [durationDays, setDurationDays] = useState<number>(initialValues?.durationDays || 2);
   const [city, setCity] = useState<string>(initialValues?.city || 'Jaipur, Rajasthan');
@@ -97,18 +60,38 @@ export const EventWizard: React.FC<EventWizardProps> = ({
     initialValues?.priorities || ['Memorable dining experience', 'Authentic traditional decor']
   );
   const [styleTheme, setStyleTheme] = useState<string>(
-    initialValues?.styleTheme || 'Royal Marigold & Brass Heritage'
+    initialValues?.styleTheme || ''
   );
   const [notes, setNotes] = useState<string>(
-    initialValues?.notes || 'Please account for a late evening baraat and elderly grandparents seating.'
+    initialValues?.notes || ''
   );
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const currentCategoryConfig = EVENT_CATEGORY_CONFIG[eventType] || EVENT_CATEGORY_CONFIG.wedding;
 
   // Dynamic cost per guest check
   const costPerGuest = guestCount > 0 ? Math.round(totalBudget / guestCount) : 0;
   const benchmarkCost = MINIMUM_PER_GUEST_BENCHMARKS[eventType]?.[tier] || 500;
   const isUnderBudget = costPerGuest < benchmarkCost;
+
+  const handleCategorySelect = (newType: EventType) => {
+    setEventType(newType);
+    const cfg = EVENT_CATEGORY_CONFIG[newType];
+    
+    // If user has not typed a custom title, keep title empty so new category placeholder/hint is shown.
+    // If user HAS entered a custom title, it is strictly preserved.
+    if (!hasUserEditedTitle || !title.trim()) {
+      setTitle('');
+    }
+
+    // Adapt default guest scale and budget if fresh wizard
+    if (!initialValues) {
+      setGuestCount(cfg.defaultGuestCount);
+      setTotalBudget(cfg.defaultBudget);
+      setDurationDays(cfg.defaultDurationDays);
+    }
+  };
 
   const toggleArrayItem = (item: string, current: string[], setter: (v: string[]) => void) => {
     if (current.includes(item)) {
@@ -120,7 +103,9 @@ export const EventWizard: React.FC<EventWizardProps> = ({
 
   const validateStep1 = () => {
     const errs: Record<string, string> = {};
-    if (!title.trim() || title.length < 3) errs.title = 'Title must be at least 3 characters.';
+    if (!title.trim() || title.trim().length < 3) {
+      errs.title = `Please enter your celebration title (e.g. "${currentCategoryConfig.exampleTitle}").`;
+    }
     if (!date) errs.date = 'Please select an event date.';
     if (!city.trim()) errs.city = 'City or location is required.';
     if (durationDays < 1) errs.durationDays = 'Duration must be at least 1 day.';
@@ -225,8 +210,8 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                 Celebration Type
               </label>
               <div id="event-type-grid" className="grid-3" role="radiogroup" aria-label="Celebration Type">
-                {(Object.keys(EVENT_TYPE_LABELS) as EventType[]).map((type) => {
-                  const meta = EVENT_TYPE_LABELS[type];
+                {(Object.keys(EVENT_CATEGORY_CONFIG) as EventType[]).map((type) => {
+                  const meta = EVENT_CATEGORY_CONFIG[type];
                   const isSelected = eventType === type;
                   return (
                     <div
@@ -234,9 +219,9 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                       tabIndex={0}
                       role="radio"
                       aria-checked={isSelected}
-                      onClick={() => setEventType(type)}
+                      onClick={() => handleCategorySelect(type)}
                       onKeyDown={(e) => {
-                        if (e.key === ' ' || e.key === 'Enter') setEventType(type);
+                        if (e.key === ' ' || e.key === 'Enter') handleCategorySelect(type);
                       }}
                       className={`card card-interactive ${isSelected ? 'card-elevated' : ''}`}
                       style={{
@@ -314,10 +299,36 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                   type="text"
                   className={`form-input ${errors.title ? 'form-input-error' : ''}`}
                   value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. Radhika & Rohan's Vivah & Sangeet"
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                    setHasUserEditedTitle(true);
+                    if (errors.title) {
+                      setErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.title;
+                        return next;
+                      });
+                    }
+                  }}
+                  placeholder={currentCategoryConfig.titlePlaceholder}
                   required
                 />
+                <div 
+                  id="event-title-example-hint"
+                  style={{
+                    fontSize: '0.75rem',
+                    color: 'var(--text-muted)',
+                    marginTop: '4px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                >
+                  <span>Category example:</span>
+                  <span style={{ color: 'var(--text-secondary)', fontStyle: 'italic', fontWeight: 500 }}>
+                    {currentCategoryConfig.exampleTitle}
+                  </span>
+                </div>
                 {errors.title && <div className="form-error-msg">{errors.title}</div>}
               </div>
 
@@ -332,7 +343,7 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                     className={`form-input ${errors.city ? 'form-input-error' : ''}`}
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
-                    placeholder="e.g. Jaipur, Bengaluru, Mumbai, Delhi NCR"
+                    placeholder={currentCategoryConfig.cityPlaceholder}
                     required
                   />
                   <MapPin size={16} style={{ position: 'absolute', right: '12px', top: '12px', color: 'var(--text-muted)' }} />
@@ -640,7 +651,7 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                 className="form-input"
                 value={styleTheme}
                 onChange={(e) => setStyleTheme(e.target.value)}
-                placeholder="e.g. Royal Marigold & Brass Heritage / Pastel Floral Bohemian"
+                placeholder={currentCategoryConfig.styleThemePlaceholder}
               />
             </div>
 
@@ -655,7 +666,7 @@ export const EventWizard: React.FC<EventWizardProps> = ({
                 rows={3}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Mention specific traditions, timing preferences, or vendor boundaries..."
+                placeholder={currentCategoryConfig.notesPlaceholder}
               />
             </div>
 

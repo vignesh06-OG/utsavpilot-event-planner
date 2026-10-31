@@ -9,6 +9,8 @@ import { sanitizeInput } from '../../server/middleware/security';
 describe('Adversarial & Boundary Verification Suite', () => {
   const allArchetypes: EventType[] = [
     'wedding',
+    'engagement',
+    'anniversary',
     'birthday',
     'puja',
     'college_fest',

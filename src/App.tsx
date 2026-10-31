@@ -260,7 +260,7 @@ export function App() {
               style={{ padding: 'var(--space-8) var(--space-4)' }}
             >
               <EventWizard
-                initialValues={currentPlan?.input}
+                initialValues={currentPlan?.isDemoSample ? undefined : currentPlan?.input}
                 onSubmit={handleGeneratePlan}
                 onCancel={() => navigateTo(currentView, false)}
                 isLoading={isLoading}

@@ -30,6 +30,26 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
     return Math.ceil((eventTime - now) / (1000 * 60 * 60 * 24));
   }, [input.date, now]);
 
+  const watermarkImage = React.useMemo(() => {
+    switch (input.eventType) {
+      case 'birthday':
+        return 'birthday_celebration.webp';
+      case 'puja':
+        return 'traditional_puja.webp';
+      case 'college_fest':
+        return 'college_fest.webp';
+      case 'community_event':
+        return 'luxury_venue.webp';
+      case 'anniversary':
+      case 'corporate_celebration':
+        return 'editorial_dining.webp';
+      case 'wedding':
+      case 'engagement':
+      default:
+        return 'editorial_mandap.webp';
+    }
+  }, [input.eventType]);
+
   return (
     <motion.div
       className="card card-elevated"
@@ -53,7 +73,7 @@ export const ExecutiveSummary: React.FC<ExecutiveSummaryProps> = ({ plan, onOpen
           right: 0,
           bottom: 0,
           width: '45%',
-          backgroundImage: `url(${getAssetUrl('editorial_mandap.webp')})`,
+          backgroundImage: `url(${getAssetUrl(watermarkImage)})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           opacity: 0.12,
