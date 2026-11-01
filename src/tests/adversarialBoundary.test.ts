@@ -18,7 +18,7 @@ describe('Adversarial & Boundary Verification Suite', () => {
     'corporate_celebration',
   ];
 
-  it('generates fully valid schema-compliant plans for all 6 celebration archetypes', () => {
+  it('generates fully valid schema-compliant plans for all 8 celebration archetypes', () => {
     allArchetypes.forEach((archetype) => {
       const input: EventInput = {
         eventType: archetype,

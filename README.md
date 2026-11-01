@@ -4,7 +4,7 @@
 
 [![Build & Verification CI](https://github.com/vignesh06-OG/utsavpilot-event-planner/actions/workflows/ci.yml/badge.svg)](https://github.com/vignesh06-OG/utsavpilot-event-planner/actions/workflows/ci.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x%20Strict-blue.svg)](https://www.typescriptlang.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-24%20passed-success.svg)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Vitest-30%20passed-success.svg)](https://vitest.dev/)
 [![Oxlint](https://img.shields.io/badge/oxlint-0%20warnings-brightgreen.svg)](https://oxc.rs/)
 [![Accessibility](https://img.shields.io/badge/WCAG-2.2%20AA%20Compliant-orange.svg)](#accessibility)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -144,11 +144,13 @@ sequenceDiagram
 ## 💎 Supported Celebration Archetypes
 
 1. **Wedding & Sangeet:** Baraat, Mandap architecture, Sangeet choreographers, multi-course feast, guest room allocations.
-2. **Milestone Birthday:** Theme balloon styling, emcee/magician, party dining, return gift hampers.
-3. **Puja & Family Bhojan:** Satyanarayan / Griha Pravesh rituals, Pandit Ji samagri, pure ghee Maha-Prasadam, devotional seating.
-4. **College Fest / Cultural Gala:** Concert headliner artists, stage sound line-arrays, university security permissions, student crew logistics.
-5. **Community Festival:** Pandal canopy, Dandiya/Garba setups, community langar/bhandara catering, municipal waste clearance.
-6. **Corporate Celebration:** Annual day awards, banquet dinner buffet, AV production, executive hospitality.
+2. **Engagement Ceremony:** Ring exchange stage, intimate family banquet, ambient acoustic music, candid photo coverage.
+3. **Milestone Anniversary:** Couple retrospective audio-visuals, fine dining banquet, renew vows / garland ceremony.
+4. **Milestone Birthday:** Theme balloon styling, emcee/magician, party dining, return gift hampers.
+5. **Puja & Family Bhojan:** Satyanarayan / Griha Pravesh rituals, Pandit Ji samagri, pure ghee Maha-Prasadam, devotional seating.
+6. **College Fest / Cultural Gala:** Concert headliner artists, stage sound line-arrays, university security permissions, student crew logistics.
+7. **Community Festival:** Pandal canopy, Dandiya/Garba setups, community langar/bhandara catering, municipal waste clearance.
+8. **Corporate Celebration:** Annual day awards, banquet dinner buffet, AV production, executive hospitality.
 
 ---
 

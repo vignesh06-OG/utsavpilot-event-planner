@@ -1002,7 +1002,64 @@ function getDeterministicVendors(input: EventInput): VendorChecklistItem[] {
     ];
   }
 
-  // Default: corporate_celebration & community_event
+  if (eventType === 'community_event') {
+    return [
+      {
+        id: 'v_pandal',
+        category: 'Infrastructure',
+        serviceTitle: 'Pandal / Shamiana & Canopy Infrastructure Contractor',
+        status: 'not_contacted',
+        benchmarkCostRange: `${formatINR(totalBudget * 0.22)} - ${formatINR(totalBudget * 0.30)}`,
+        provenance: 'estimated',
+        keyQuestionsToAsk: [
+          'Is the pandal material certified fire-retardant and waterproof?',
+          'What is the dismantle and site restoration timeline after the event concludes?',
+        ],
+        verificationTip: 'Inspect anchor poles, guy-wire tensions, and emergency exit clearance widths.',
+      },
+      {
+        id: 'v_langar_catering',
+        category: 'Catering',
+        serviceTitle: 'Community Feast / Langar / Mahaprasad Caterer',
+        status: 'not_contacted',
+        benchmarkCostRange: `${formatINR(totalBudget * 0.35)} - ${formatINR(totalBudget * 0.45)}`,
+        provenance: 'estimated',
+        keyQuestionsToAsk: [
+          'Can your team manage continuous batch cooking for variable guest turnout?',
+          'Are biodegradable leaf plates (pattal/donas) and drinking water drums included?',
+        ],
+        verificationTip: 'Review past experience catering for large public community gatherings or temple festivals.',
+      },
+      {
+        id: 'v_pa_sound',
+        category: 'Audio & Lighting',
+        serviceTitle: 'Public Address (PA) Sound & Stage Lighting Operator',
+        status: 'not_contacted',
+        benchmarkCostRange: `${formatINR(totalBudget * 0.12)} - ${formatINR(totalBudget * 0.18)}`,
+        provenance: 'estimated',
+        keyQuestionsToAsk: [
+          'Are long-throw horn speakers and directional stage monitors provided?',
+          'Does the quote include a diesel generator backup for sound during power cuts?',
+        ],
+        verificationTip: 'Verify municipal sound curfew compliance (10:00 PM cutoff) and limiter settings.',
+      },
+      {
+        id: 'v_sanitation',
+        category: 'Sanitation & Permits',
+        serviceTitle: 'Municipal Waste Clearance & Portable Sanitation Service',
+        status: 'not_contacted',
+        benchmarkCostRange: `${formatINR(totalBudget * 0.08)} - ${formatINR(totalBudget * 0.12)}`,
+        provenance: 'estimated',
+        keyQuestionsToAsk: [
+          'Will your team place segregated wet/dry waste bins throughout the venue grounds?',
+          'Is post-event ground cleaning and waste handover to municipal vehicles included?',
+        ],
+        verificationTip: 'Confirm local ward health officer clearance requirements and designated dump points.',
+      },
+    ];
+  }
+
+  // Default: corporate_celebration
   return [
     {
       id: 'v_venue',

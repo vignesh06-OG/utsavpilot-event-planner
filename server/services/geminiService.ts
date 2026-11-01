@@ -2,6 +2,7 @@ import type { EventInput, EventPlan } from '../../src/domain/types';
 import { calculateBudgetFeasibility, formatINR } from '../../src/engine/budgetEngine';
 import { generateDeterministicPlan } from '../../src/engine/deterministicFallback';
 import { sanitizeInput } from '../middleware/security';
+import { EventPlanSchema } from '../../src/domain/schemas';
 
 interface RawGeminiTask {
   id?: string;
@@ -185,7 +186,14 @@ JSON Output Requirements (Do not wrap in markdown or backticks, return ONLY vali
       modelUsed: 'gemini-flash',
     };
 
-    return plan;
+    // Validate generated plan against EventPlanSchema
+    const parseResult = EventPlanSchema.safeParse(plan);
+    if (!parseResult.success) {
+      console.warn('[GeminiService] Schema validation failed. Falling back to deterministic engine:', parseResult.error.format());
+      return generateDeterministicPlan(input);
+    }
+
+    return parseResult.data;
   } catch (err: unknown) {
     const errMsg = err instanceof Error ? err.message : String(err);
     console.warn(`[GeminiService] Error calling Gemini (${errMsg}). Safe failover to deterministic engine.`);

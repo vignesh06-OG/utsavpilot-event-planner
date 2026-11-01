@@ -155,6 +155,33 @@ describe('Event Category & Title Contextual Regression Suite', () => {
     expect(vendorServices).toContain('prasadam');
   });
 
+  it('guarantees community events generate community pandal and langar vendors rather than corporate suites', () => {
+    const communityInput: EventInput = {
+      eventType: 'community_event',
+      title: 'Ganesh Utsav Community Mahotsav',
+      date: '2026-11-20',
+      durationDays: 3,
+      city: 'Pune',
+      tier: 'standard',
+      guestCount: 800,
+      totalBudget: 400000,
+      currency: 'INR',
+      dietaryRequirements: ['Community Mahaprasad'],
+      accessibilityNeeds: [],
+      priorities: ['Pandal setup', 'Sound'],
+      styleTheme: 'Traditional Mahotsav',
+    };
+
+    const plan = generateDeterministicPlan(communityInput);
+    const vendorServices = plan.vendorChecklist.map((v) => v.serviceTitle.toLowerCase()).join(' ');
+
+    expect(vendorServices).not.toContain('corporate');
+    expect(vendorServices).not.toContain('trophies');
+    expect(vendorServices).not.toContain('leadership');
+    expect(vendorServices).toContain('pandal');
+    expect(vendorServices).toContain('caterer');
+  });
+
   it('validates all 8 archetypes through EventInputSchema', () => {
     categories.forEach((cat) => {
       const input = {
